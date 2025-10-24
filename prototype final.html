@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bakery Hub 3.0 – 직원 포털</title>
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#2563eb; --surface:#ffffff; --bg:#f6f7fb; --text:#0f172a; --muted:#64748b;
+    --border:#e5e7eb; --shadow:0 8px 24px rgba(2,29,61,.05);
+    --red:#ef4444; --amber:#f59e0b; --yellow:#eab308; --green:#16a34a;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Pretendard",system-ui,Segoe UI,Roboto,Arial; color:var(--text); background:var(--bg)}
+  header{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.9);backdrop-filter:blur(6px);border-bottom:1px solid var(--border)}
+  .wrap{max-width:1200px;margin:0 auto;padding:16px}
+  nav{display:flex;gap:8px;flex-wrap:wrap}
+  nav a{padding:10px 14px;border-radius:12px;color:#334155;text-decoration:none}
+  nav a.active{background:#e8f0ff;color:var(--blue);font-weight:700}
+  .spacer{flex:1}
+  .flex{display:flex;align-items:center;gap:10px}
+  .btn{border:1px solid var(--border);background:#fff;border-radius:12px;padding:10px 14px;font-weight:600;cursor:pointer}
+  .btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);padding:16px}
+  .title{font-size:18px;font-weight:700;margin:0 0 8px}
+  .subtle{color:var(--muted)}
+  .page{display:none}.page.active{display:block}
+  .grid{display:grid;gap:16px}
+  .g-3{grid-template-columns:repeat(3,1fr)}
+  @media (max-width:900px){.g-3{grid-template-columns:1fr}}
+  .kpi{display:flex;flex-direction:column;gap:8px}
+  .badge{display:inline-block;border-radius:999px;padding:6px 10px;font-size:12px}
+  .danger{background:#fee2e2;color:#991b1b}
+  .warn{background:#fff7ed;color:#9a3412}
+  .note{background:#fef9c3;color:#854d0e}
+  table{width:100%;border-collapse:collapse}
+  th,td{padding:10px;border-top:1px solid var(--border);text-align:left}
+  th{color:var(--muted);font-size:13px}
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap}
+  .input, select, textarea{padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:#fff}
+  dialog{border:none;border-radius:16px;box-shadow:var(--shadow);padding:16px;width:min(560px,92vw)}
+  .field{margin-bottom:10px}.field label{display:block;margin-bottom:4px;color:#475569;font-size:13px}
+  .toasts{position:fixed;right:16px;bottom:16px;display:flex;flex-direction:column;gap:8px;z-index:50}
+  .toast{background:#0f172a;color:#fff;padding:10px 12px;border-radius:12px;opacity:.96}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap flex">
+    <strong style="font-size:20px">🏪 Bakery Hub</strong>
+    <nav id="nav" class="flex">
+      <a href="#" data-page="home" class="active">홈</a>
+      <a href="#" data-page="notice">공지사항</a>
+      <a href="#" data-page="inventory">재고관리</a>
+      <a href="#" data-page="attendance">출퇴근</a>
+      <a href="#" data-page="reservations">예약</a>
+      <a href="#" data-page="deliveries">배달</a>
+    </nav>
+    <div class="spacer"></div>
+    <button class="btn primary" data-go="inventory" id="quickAdd">재고 등록</button>
+  </div>
+</header>
+
+<main class="wrap" style="padding-block:18px">
+  <!-- HOME -->
+  <section id="home" class="page active">
+    <div class="card" style="height:220px;display:flex;align-items:center;justify-content:center">
+      <div class="subtle">매장 이미지 배너(차후 교체 가능)</div>
+    </div>
+    <div class="grid g-3" style="margin-top:16px">
+      <div class="card">
+        <h3 class="title">오늘의 공지</h3>
+        <div id="homeNotice" class="subtle">공지사항 페이지에서 공지를 등록해보세요.</div>
+      </div>
+      <div class="card">
+        <h3 class="title">빼야 하는 빵</h3>
+        <ul id="homeToday" class="subtle" style="padding-left:18px"></ul>
+      </div>
+      <div class="card">
+        <h3 class="title">임박(D-1~D-2)</h3>
+        <ul id="homeSoon" class="subtle" style="padding-left:18px"></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- NOTICE -->
+  <section id="notice" class="page">
+    <div class="card">
+      <div class="flex" style="justify-content:space-between">
+        <h3 class="title">공지사항</h3>
+        <div class="toolbar">
+          <select id="noticeFilter" class="input">
+            <option value="all">전체</option>
+            <option value="important">중요</option>
+            <option value="normal">일반</option>
+            <option value="unread">미확인</option>
+          </select>
+          <button class="btn primary" id="openNoticeAdd">공지 등록</button>
+        </div>
+      </div>
+      <div id="noticeList" style="margin-top:12px"></div>
+    </div>
+  </section>
+
+  <!-- INVENTORY -->
+  <section id="inventory" class="page">
+    <!-- 상단 3구역: D-DAY, D-1, D-2 -->
+    <div class="grid g-3">
+      <div class="card kpi">
+        <h3 class="title">D-DAY (오늘 빼기)</h3>
+        <div id="boxD0" class="subtle">없음</div>
+      </div>
+      <div class="card kpi">
+        <h3 class="title">D-1 (내일 임박)</h3>
+        <div id="boxD1" class="subtle">없음</div>
+      </div>
+      <div class="card kpi">
+        <h3 class="title">D-2 (모레 임박)</h3>
+        <div id="boxD2" class="subtle">없음</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <div class="flex" style="justify-content:space-between;align-items:center">
+        <h3 class="title">재고 목록</h3>
+        <div class="toolbar">
+          <input id="search" class="input" placeholder="품목/카테고리 검색">
+          <select id="catFilter" class="input"><option value="all">카테고리: 전체</option></select>
+          <button class="btn primary" id="openAdd">재고 등록</button>
+        </div>
+      </div>
+      <div style="overflow:auto;margin-top:8px">
+        <table id="table">
+          <thead>
+            <tr><th>품목</th><th>카테고리</th><th>남은 재고</th><th>최소 수량</th><th>유통기한</th><th>D-Day</th><th>관리</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="subtle" id="countLabel" style="margin-top:8px"></div>
+    </div>
+  </section>
+
+  <!-- ATTENDANCE -->
+  <section id="attendance" class="page">
+    <div class="card">
+      <div class="flex" style="justify-content:space-between;align-items:center">
+        <h3 class="title">출퇴근 기록</h3>
+        <div class="toolbar">
+          <input id="aName" class="input" placeholder="직원명">
+          <button class="btn primary" id="btnClockIn">출근</button>
+          <button class="btn" id="btnClockOut">퇴근</button>
+        </div>
+      </div>
+      <div class="grid g-3" style="margin-top:12px">
+        <div class="card"><strong>오늘</strong><div id="attToday" class="subtle" style="margin-top:6px">기록 없음</div></div>
+        <div class="card"><strong>최근 5개</strong><div id="attRecent" class="subtle" style="margin-top:6px">기록 없음</div></div>
+        <div class="card"><strong>전체</strong><div id="attAll" class="subtle" style="margin-top:6px">0건</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESERVATIONS -->
+  <section id="reservations" class="page">
+    <div class="card">
+      <div class="flex" style="justify-content:space-between;align-items:center">
+        <h3 class="title">예약 목록</h3>
+        <button class="btn primary" id="openResv">예약 추가</button>
+      </div>
+      <div style="overflow:auto;margin-top:8px">
+        <table>
+          <thead><tr><th>이름</th><th>인원</th><th>예약시간</th><th>연락처</th><th>요청사항</th><th>상태</th><th>관리</th></tr></thead>
+          <tbody id="resvTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- DELIVERIES -->
+  <section id="deliveries" class="page">
+    <div class="card">
+      <div class="flex" style="justify-content:space-between;align-items:center">
+        <h3 class="title">배달 목록</h3>
+        <button class="btn primary" id="openDeli">배달 추가</button>
+      </div>
+      <div style="overflow:auto;margin-top:8px">
+        <table>
+          <thead><tr><th>고객명</th><th>주소</th><th>연락처</th><th>내용</th><th>상태</th><th>관리</th></tr></thead>
+          <tbody id="deliTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap" style="padding:18px;color:#94a3b8;font-size:13px">© 2025 Bakery Hub</footer>
+
+<!-- 공지 모달 -->
+<dialog id="noticeModal">
+  <form method="dialog" id="noticeForm">
+    <h3 class="title">공지 등록</h3>
+    <div class="field"><label>제목</label><input id="nTitle" class="input" required></div>
+    <div class="field"><label>내용</label><textarea id="nBody" class="input" rows="3"></textarea></div>
+    <div class="field"><label>분류</label>
+      <select id="nType" class="input"><option value="normal">일반</option><option value="important">중요</option></select>
+    </div>
+    <div class="flex" style="justify-content:flex-end;margin-top:10px">
+      <button class="btn" type="button" id="cancelNotice">취소</button>
+      <button class="btn primary" type="submit">등록</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- 재고 모달 -->
+<dialog id="itemModal">
+  <form method="dialog" id="itemForm">
+    <h3 class="title" id="itemTitle">재고 등록</h3>
+    <div class="grid g-3">
+      <div class="field"><label>품목명</label><input id="fName" class="input" required></div>
+      <div class="field"><label>카테고리</label><input id="fCat" class="input" placeholder="빵/디저트 등"></div>
+      <div class="field"><label>수량</label><input id="fQty" type="number" min="0" value="10" class="input"></div>
+      <div class="field"><label>최소 수량</label><input id="fMin" type="number" min="0" value="15" class="input"></div>
+      <div class="field"><label>유통기한</label><input id="fExp" type="date" class="input" required></div>
+      <input type="hidden" id="fIndex">
+    </div>
+    <div class="flex" style="justify-content:flex-end;margin-top:10px">
+      <button class="btn" type="button" id="cancelItem">취소</button>
+      <button class="btn primary" type="submit">저장</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- 예약 모달 -->
+<dialog id="resvModal">
+  <form method="dialog" id="resvForm">
+    <h3 class="title" id="resvTitle">예약 추가</h3>
+    <div class="grid g-3">
+      <div class="field"><label>이름</label><input id="rName" class="input" required></div>
+      <div class="field"><label>인원</label><input id="rPeople" type="number" min="1" value="2" class="input"></div>
+      <div class="field"><label>예약 시간</label><input id="rTime" type="datetime-local" class="input" required></div>
+      <div class="field" style="grid-column:1/-1"><label>연락처</label><input id="rPhone" class="input"></div>
+      <div class="field" style="grid-column:1/-1"><label>요청사항</label><textarea id="rNote" class="input" rows="2"></textarea></div>
+      <input type="hidden" id="rIndex">
+    </div>
+    <div class="flex" style="justify-content:flex-end;margin-top:10px">
+      <button class="btn" type="button" id="cancelResv">취소</button>
+      <button class="btn primary" type="submit">저장</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- 배달 모달 -->
+<dialog id="deliModal">
+  <form method="dialog" id="deliForm">
+    <h3 class="title" id="deliTitle">배달 추가</h3>
+    <div class="grid g-3">
+      <div class="field"><label>고객명</label><input id="dName" class="input" required></div>
+      <div class="field"><label>연락처</label><input id="dPhone" class="input"></div>
+      <div class="field" style="grid-column:1/-1"><label>주소</label><input id="dAddr" class="input" required></div>
+      <div class="field" style="grid-column:1/-1"><label>주문 내역</label><textarea id="dItems" class="input" rows="2" placeholder="예: 크로와상3, 식빵1"></textarea></div>
+      <div class="field"><label>상태</label>
+        <select id="dStatus" class="input">
+          <option>준비중</option><option>배달중</option><option>완료</option>
+        </select>
+      </div>
+      <input type="hidden" id="dIndex">
+    </div>
+    <div class="flex" style="justify-content:flex-end;margin-top:10px">
+      <button class="btn" type="button" id="cancelDeli">취소</button>
+      <button class="btn primary" type="submit">저장</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="toasts" id="toasts"></div>
+
+<script>
+// ---------- 유틸 ----------
+const $ = sel => document.querySelector(sel);
+const $$ = sel => [...document.querySelectorAll(sel)];
+const toastBox = $("#toasts");
+const toast = (msg)=>{ const el=document.createElement('div'); el.className='toast'; el.textContent=msg; toastBox.appendChild(el); setTimeout(()=>el.style.opacity='0',2200); setTimeout(()=>el.remove(),2700); };
+const pad = n => String(n).padStart(2,'0');
+const fmtDate = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const fmtTime = d => `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+const todayStr = fmtDate(new Date());
+const dday = exp => Math.ceil((new Date(exp) - new Date(todayStr))/86400000);
+const store = {
+  get:(k,f)=>{ try{ return JSON.parse(localStorage.getItem(k)) ?? f; }catch{ return f; } },
+  set:(k,v)=> localStorage.setItem(k, JSON.stringify(v))
+};
+
+// ---------- 라우팅 (클릭 문제 해결: 이벤트 위임) ----------
+function showPage(id){
+  $$(".page").forEach(p=>p.classList.remove("active"));
+  $("#"+id).classList.add("active");
+  $$("#nav a").forEach(a=>a.classList.toggle("active", a.dataset.page===id));
+}
+$("#nav").addEventListener("click",(e)=>{
+  const a = e.target.closest("a[data-page]"); if(!a) return;
+  e.preventDefault(); showPage(a.dataset.page);
+});
+$("#quickAdd").addEventListener("click", ()=>{
+  showPage('inventory');
+  openItemModal(); // 바로 재고 등록 모달
+});
+
+// ---------- 초기 데이터 ----------
+let notices = store.get('notices', [
+  {id:Date.now()-1, title:'내일 9시 재고 점검', body:'오픈 전 임박품 정리', type:'important', read:false}
+]);
+let items = store.get('items', [
+  {name:'크로와상',cat:'빵',qty:26,min:15,exp:fmtDate(new Date(Date.now()+86400000))},
+  {name:'크림빵',cat:'빵',qty:12,min:20,exp:fmtDate(new Date())},
+  {name:'식빵',cat:'식사빵',qty:40,min:25,exp:fmtDate(new Date(Date.now()+86400000*3))},
+  {name:'초코머핀',cat:'디저트',qty:8,min:15,exp:fmtDate(new Date())},
+  {name:'스콘',cat:'디저트',qty:5,min:10,exp:fmtDate(new Date(Date.now()+86400000*2))}
+]);
+let attendance = store.get('attendance', []);  // {name,type,at}
+let reservations = store.get('reservations', []);
+let deliveries = store.get('deliveries', []);
+
+// ---------- HOME ----------
+function renderHome(){
+  const n = notices[0];
+  $("#homeNotice").innerHTML = n ? `<strong>${n.type==='important'?'[중요] ':''}${n.title}</strong><br><span class="subtle">${n.body||''}</span>` : '등록된 공지가 없습니다.';
+  const d0 = items.filter(i=>dday(i.exp)<=0);
+  const soon = items.filter(i=>{const d=dday(i.exp);return d>0&&d<=2;});
+  $("#homeToday").innerHTML = d0.length? d0.map(i=>`<li>${i.name} (${i.qty}개)</li>`).join('') : '없음';
+  $("#homeSoon").innerHTML = soon.length? soon.map(i=>`<li>${i.name} (D-${dday(i.exp)})</li>`).join('') : '없음';
+}
+
+// ---------- NOTICE ----------
+const noticeModal = $("#noticeModal");
+$("#openNoticeAdd").addEventListener("click", ()=>{ $("#nTitle").value=''; $("#nBody").value=''; $("#nType").value='normal'; noticeModal.showModal(); });
+$("#cancelNotice").addEventListener("click", ()=> noticeModal.close());
+$("#noticeForm").addEventListener("submit",(e)=>{
+  e.preventDefault();
+  notices.unshift({ id:Date.now(), title:$("#nTitle").value.trim()||'제목 없음', body:$("#nBody").value.trim()||'', type:$("#nType").value, read:false });
+  store.set('notices', notices); noticeModal.close(); renderNotice(); renderHome(); toast('공지 등록 완료');
+});
+$("#noticeFilter").addEventListener("change", renderNotice);
+function renderNotice(){
+  const f = $("#noticeFilter").value;
+  let data = [...notices];
+  if (f==='important') data = data.filter(n=>n.type==='important');
+  if (f==='normal')    data = data.filter(n=>n.type==='normal');
+  if (f==='unread')    data = data.filter(n=>!n.read);
+  $("#noticeList").innerHTML = data.length ? data.map(n=>`
+    <div class="card" style="margin-bottom:8px">
+      <div class="flex" style="justify-content:space-between">
+        <div>
+          <div><strong>${n.type==='important'?'[중요] ':''}${n.title}</strong></div>
+          <div class="subtle">${n.body||''}</div>
+        </div>
+        <div class="flex">
+          <label class="subtle" style="display:flex;align-items:center;gap:6px">
+            <input type="checkbox" ${n.read?'checked':''} onchange="toggleNotice(${n.id}, this.checked)"> 확인
+          </label>
+          <button class="btn" onclick="delNotice(${n.id})">삭제</button>
+        </div>
+      </div>
+    </div>
+  `).join('') : `<div class="subtle">표시할 공지가 없습니다.</div>`;
+}
+window.toggleNotice=(id,v)=>{ const t=notices.find(n=>n.id===id); if(t){ t.read=v; store.set('notices',notices); renderHome(); } };
+window.delNotice=(id)=>{ notices = notices.filter(n=>n.id!==id); store.set('notices',notices); renderNotice(); renderHome(); };
+
+// ---------- INVENTORY (D-DAY/D-1/D-2 상단 카드 + 목록) ----------
+const itemModal = $("#itemModal");
+$("#openAdd").addEventListener("click", ()=> openItemModal());
+$("#cancelItem").addEventListener("click", ()=> itemModal.close());
+$("#itemForm").addEventListener("submit",(e)=>{
+  e.preventDefault();
+  const idx = $("#fIndex").value;
+  const obj = {
+    name:$("#fName").value.trim()||'새 품목',
+    cat: $("#fCat").value.trim()||'기타',
+    qty: Number($("#fQty").value)||0,
+    min: Number($("#fMin").value)||0,
+    exp: $("#fExp").value
+  };
+  if (idx==='') items.unshift(obj); else items[idx]=obj;
+  store.set('items', items); itemModal.close(); renderInventory(); renderHome(); toast('저장되었습니다');
+});
+const search = $("#search"), catFilter = $("#catFilter");
+search.addEventListener("input", renderInventory);
+catFilter.addEventListener("change", renderInventory);
+
+function openItemModal(idx){
+  $("#itemTitle").textContent = idx==null ? '재고 등록' : '재고 수정';
+  $("#fIndex").value = idx==null ? '' : idx;
+  if (idx==null){ $("#fName").value=''; $("#fCat").value=''; $("#fQty").value=10; $("#fMin").value=15; $("#fExp").value=fmtDate(new Date(Date.now()+86400000*3)); }
+  else { const i=items[idx]; $("#fName").value=i.name; $("#fCat").value=i.cat; $("#fQty").value=i.qty; $("#fMin").value=i.min; $("#fExp").value=i.exp; }
+  itemModal.showModal();
+}
+window.delItem = (idx)=>{ if(!confirm('삭제할까요?')) return; const nm=items[idx].name; items.splice(idx,1); store.set('items',items); renderInventory(); renderHome(); toast(`삭제됨: ${nm}`); };
+
+function refreshCatFilter(){
+  const set = new Set(items.map(i=>i.cat));
+  const prev = catFilter.value;
+  catFilter.innerHTML = `<option value="all">카테고리: 전체</option>` + [...set].map(c=>`<option value="${c}">${c}</option>`).join('');
+  if ([...set,'all'].includes(prev)) catFilter.value = prev;
+}
+function filteredItems(){
+  const kw = search.value.trim().toLowerCase();
+  let data = items.filter(i => i.name.toLowerCase().includes(kw) || i.cat.toLowerCase().includes(kw));
+  if (catFilter.value!=='all') data = data.filter(i=>i.cat===catFilter.value);
+  return data;
+}
+function renderInventory(){
+  refreshCatFilter();
+  const data = filteredItems();
+
+  // 상단 3박스
+  const d0 = data.filter(i=>dday(i.exp)<=0);
+  const d1 = data.filter(i=>dday(i.exp)===1);
+  const d2 = data.filter(i=>dday(i.exp)===2);
+  const fmtList = arr => arr.length? `<ul style="margin:0;padding-left:18px">${arr.map(i=>`<li>${i.name} (${i.qty}개)</li>`).join('')}</ul>` : '없음';
+  $("#boxD0").innerHTML = fmtList(d0);
+  $("#boxD1").innerHTML = fmtList(d1);
+  $("#boxD2").innerHTML = fmtList(d2);
+
+  // 테이블
+  $("#table tbody").innerHTML = data.map(i=>{
+    const d = dday(i.exp), tone = d<=0?'danger':d===1?'warn':'note', color = tone==='danger'?'#b91c1c':tone==='warn'?'#9a3412':'#854d0e';
+    const idx = items.indexOf(i);
+    return `<tr style="color:${color}">
+      <td>${i.name}</td><td>${i.cat}</td><td>${i.qty}</td><td>${i.min}</td><td>${i.exp}</td>
+      <td><span class="badge ${tone}">${d<=0?'D-DAY':`D-${d}`}</span></td>
+      <td><button class="btn" onclick="openItemModal(${idx})">수정</button> <button class="btn" onclick="delItem(${idx})">삭제</button></td>
+    </tr>`;
+  }).join('');
+  $("#countLabel").textContent = `${data.length}개 항목`;
+}
+
+// ---------- ATTENDANCE ----------
+$("#btnClockIn").addEventListener("click", ()=> clock('출근'));
+$("#btnClockOut").addEventListener("click", ()=> clock('퇴근'));
+function clock(type){
+  const name = $("#aName").value.trim();
+  if (!name){ toast('직원명을 입력하세요'); return; }
+  attendance.unshift({name, type, at:new Date().toISOString()});
+  store.set('attendance', attendance);
+  renderAttendance(); toast(`${name} ${type} 기록`);
+}
+window.delAtt = (i)=>{ attendance.splice(i,1); store.set('attendance',attendance); renderAttendance(); };
+function renderAttendance(){
+  const today = attendance.filter(a=> fmtDate(new Date(a.at))===todayStr );
+  $("#attToday").innerHTML = today.length? today.map(a=>`${fmtTime(new Date(a.at))} · ${a.name} · ${a.type}`).join('<br>') : '기록 없음';
+  $("#attRecent").innerHTML = attendance.slice(0,5).map(a=>`${fmtDate(new Date(a.at))} ${fmtTime(new Date(a.at))} · ${a.name} · ${a.type} <button class="btn" onclick="delAtt(${attendance.indexOf(a)})">삭제</button>`).join('<br>') || '기록 없음';
+  $("#attAll").textContent = `${attendance.length}건`;
+}
+
+// ---------- RESERVATIONS ----------
+const resvModal = $("#resvModal");
+$("#openResv").addEventListener("click", ()=> openResvModal());
+$("#cancelResv").addEventListener("click", ()=> resvModal.close());
+$("#resvForm").addEventListener("submit",(e)=>{
+  e.preventDefault();
+  const idx = $("#rIndex").value;
+  const obj = {
+    name: $("#rName").value.trim(),
+    people: Number($("#rPeople").value)||1,
+    timeISO: $("#rTime").value,
+    phone: $("#rPhone").value.trim(),
+    note: $("#rNote").value.trim(),
+    status: '확정',
+    id: idx===''? Date.now(): reservations[idx].id
+  };
+  if (idx==='') reservations.unshift(obj); else reservations[idx]=obj;
+  store.set('reservations',reservations); resvModal.close(); renderReservations(); toast('예약 저장');
+});
+function openResvModal(idx){
+  $("#resvTitle").textContent = idx==null ? '예약 추가' : '예약 수정';
+  $("#rIndex").value = idx==null ? '' : idx;
+  if (idx==null){ $("#rName").value=''; $("#rPeople").value=2; $("#rTime").value=''; $("#rPhone").value=''; $("#rNote").value=''; }
+  else { const r=reservations[idx]; $("#rName").value=r.name; $("#rPeople").value=r.people; $("#rTime").value=r.timeISO; $("#rPhone").value=r.phone; $("#rNote").value=r.note; }
+  resvModal.showModal();
+}
+window.setResvStatus=(i,v)=>{ reservations[i].status=v; store.set('reservations',reservations); renderReservations(); };
+window.delResv=(i)=>{ if(!confirm('삭제할까요?')) return; reservations.splice(i,1); store.set('reservations',reservations); renderReservations(); };
+const fmtDT = iso => { const d=new Date(iso); return `${fmtDate(d)} ${fmtTime(d)}`; };
+function renderReservations(){
+  $("#resvTable").innerHTML = reservations.length ? reservations.map((r,i)=>`
+    <tr>
+      <td>${r.name}</td><td>${r.people}</td><td>${fmtDT(r.timeISO)}</td><td>${r.phone||'-'}</td><td>${r.note||'-'}</td>
+      <td>
+        <select class="input" onchange="setResvStatus(${i},this.value)">
+          <option ${r.status==='확정'?'selected':''}>확정</option>
+          <option ${r.status==='대기'?'selected':''}>대기</option>
+          <option ${r.status==='취소'?'selected':''}>취소</option>
+          <option ${r.status==='방문완료'?'selected':''}>방문완료</option>
+        </select>
+      </td>
+      <td><button class="btn" onclick="openResvModal(${i})">수정</button> <button class="btn" onclick="delResv(${i})">삭제</button></td>
+    </tr>
+  `).join('') : `<tr><td colspan="7" class="subtle">예약 없음</td></tr>`;
+}
+
+// ---------- DELIVERIES ----------
+const deliModal = $("#deliModal");
+$("#openDeli").addEventListener("click", ()=> openDeliModal());
+$("#cancelDeli").addEventListener("click", ()=> deliModal.close());
+$("#deliForm").addEventListener("submit",(e)=>{
+  e.preventDefault();
+  const idx = $("#dIndex").value;
+  const obj = {
+    name: $("#dName").value.trim(),
+    phone: $("#dPhone").value.trim(),
+    addr: $("#dAddr").value.trim(),
+    items: $("#dItems").value.trim(),
+    status: $("#dStatus").value,
+    id: idx===''? Date.now(): deliveries[idx].id
+  };
+  if (idx==='') deliveries.unshift(obj); else deliveries[idx]=obj;
+  store.set('deliveries',deliveries); deliModal.close(); renderDeliveries(); toast('배달 저장');
+});
+function openDeliModal(idx){
+  $("#deliTitle").textContent = idx==null ? '배달 추가' : '배달 수정';
+  $("#dIndex").value = idx==null ? '' : idx;
+  if (idx==null){ $("#dName").value=''; $("#dPhone").value=''; $("#dAddr").value=''; $("#dItems").value=''; $("#dStatus").value='준비중'; }
+  else { const d=deliveries[idx]; $("#dName").value=d.name; $("#dPhone").value=d.phone; $("#dAddr").value=d.addr; $("#dItems").value=d.items; $("#dStatus").value=d.status; }
+  deliModal.showModal();
+}
+window.setDeliStatus=(i,v)=>{ deliveries[i].status=v; store.set('deliveries',deliveries); renderDeliveries(); };
+window.delDeli=(i)=>{ if(!confirm('삭제할까요?')) return; deliveries.splice(i,1); store.set('deliveries',deliveries); renderDeliveries(); };
+function renderDeliveries(){
+  $("#deliTable").innerHTML = deliveries.length ? deliveries.map((d,i)=>`
+    <tr>
+      <td>${d.name}</td><td>${d.addr}</td><td>${d.phone||'-'}</td><td>${d.items||'-'}</td>
+      <td>
+        <select class="input" onchange="setDeliStatus(${i},this.value)">
+          <option ${d.status==='준비중'?'selected':''}>준비중</option>
+          <option ${d.status==='배달중'?'selected':''}>배달중</option>
+          <option ${d.status==='완료'?'selected':''}>완료</option>
+        </select>
+      </td>
+      <td><button class="btn" onclick="openDeliModal(${i})">수정</button> <button class="btn" onclick="delDeli(${i})">삭제</button></td>
+    </tr>
+  `).join('') : `<tr><td colspan="6" class="subtle">배달 없음</td></tr>`;
+}
+
+// ---------- 초기 렌더 ----------
+function boot(){
+  renderHome();
+  renderNotice();
+  renderInventory();
+  renderAttendance();
+  renderReservations();
+  renderDeliveries();
+}
+boot();
+</script>
+</body>
+</html>
