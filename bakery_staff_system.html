@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>빵집 직원 전용 시스템</title>
+    <title>Staff System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -11,20 +12,35 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --primary: #7dd3fc;
+            --primary-dark: #06b6d4;
+            --primary-light: #cffafe;
+            --danger: #fb7185;
+            --warning: #fcd34d;
+            --success: #86efac;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --bg-primary: #f0f9ff;
+            --bg-secondary: #ffffff;
+            --border: #cffafe;
+            --shadow-sm: 0 1px 2px 0 rgba(34, 197, 255, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(34, 197, 255, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(34, 197, 255, 0.15);
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
         }
 
         .container {
             width: 100%;
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 0;
         }
 
         /* 로그인 페이지 */
@@ -33,6 +49,7 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            background: linear-gradient(135deg, #0369a1 0%, #0891b2 25%, #06b6d4 50%, #22d3ee 75%, #67e8f9 100%);
         }
 
         .login-page.active {
@@ -40,19 +57,21 @@
         }
 
         .login-box {
-            background: white;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafb 100%);
+            padding: 48px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px -10px rgba(6, 182, 212, 0.2), 0 0 1px rgba(0, 0, 0, 0.05);
             width: 100%;
-            max-width: 400px;
+            max-width: 420px;
+            border: 1px solid rgba(207, 250, 254, 0.6);
         }
 
         .login-box h1 {
             text-align: center;
-            color: #333;
-            margin-bottom: 30px;
-            font-size: 28px;
+            color: var(--text-primary);
+            margin-bottom: 32px;
+            font-size: 32px;
+            font-weight: 700;
         }
 
         .login-box .form-group {
@@ -62,44 +81,54 @@
         .login-box label {
             display: block;
             margin-bottom: 8px;
-            color: #555;
-            font-weight: 500;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 14px;
         }
 
         .login-box input {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 5px;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
             font-size: 14px;
-            transition: border-color 0.3s;
+            transition: all 0.3s;
+            background: var(--bg-primary);
         }
 
         .login-box input:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: var(--primary);
+            background: var(--bg-secondary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
 
         .login-box button {
             width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 12px 16px;
+            background: linear-gradient(135deg, #0891b2 0%, #06b6d4 50%, #22d3ee 100%);
             color: white;
             border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            font-weight: bold;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: all 0.3s;
+            margin-top: 8px;
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
         }
 
         .login-box button:hover {
-            transform: translateY(-2px);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 12px 24px rgba(6, 182, 212, 0.4);
+            animation: buttonBounce 0.6s ease-out;
         }
 
         /* 메인 페이지 */
         .main-page {
             display: none;
+            background: var(--bg-primary);
+            min-height: 100vh;
         }
 
         .main-page.active {
@@ -107,114 +136,204 @@
         }
 
         .header {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafb 100%);
+            padding: 24px 32px;
+            border-bottom: 1px solid rgba(207, 250, 254, 0.3);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 8px rgba(6, 182, 212, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .header h1 {
-            color: #333;
-            font-size: 24px;
+            color: var(--text-primary);
+            font-size: 28px;
+            font-weight: 700;
         }
 
         .user-info {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 16px;
         }
 
         .user-info span {
-            color: #666;
+            color: var(--text-secondary);
             font-weight: 500;
+            font-size: 14px;
         }
 
         .logout-btn {
-            background: #ff6b6b;
+            background: linear-gradient(135deg, #be185d 0%, #db2777 100%);
             color: white;
             border: none;
             padding: 10px 20px;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: all 0.3s;
+            font-weight: 600;
+            font-size: 13px;
+            box-shadow: 0 2px 8px rgba(219, 39, 119, 0.2);
         }
 
         .logout-btn:hover {
-            background: #ee5a52;
+            background: linear-gradient(135deg, #9d174d 0%, #be185d 100%);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 16px rgba(219, 39, 119, 0.3);
+            animation: buttonBounce 0.6s ease-out;
         }
 
         .nav-tabs {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            background: white;
-            padding: 10px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            gap: 8px;
+            padding: 24px 32px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafb 100%);
+            border-bottom: 1px solid rgba(207, 250, 254, 0.3);
+            flex-wrap: wrap;
+            overflow-x: auto;
         }
 
         .nav-tabs button {
-            flex: 1;
-            padding: 12px 20px;
-            background: #f0f0f0;
+            padding: 10px 18px;
+            background: transparent;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
+            font-size: 14px;
+            color: var(--text-secondary);
             transition: all 0.3s;
-            color: #666;
+            white-space: nowrap;
+        }
+
+        .nav-tabs button:hover {
+            background: var(--bg-primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+            animation: buttonBounce 0.5s ease-out;
         }
 
         .nav-tabs button.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #0891b2 0%, #06b6d4 50%, #22d3ee 100%);
             color: white;
+            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+        }
+
+        .content-wrapper {
+            padding: 32px;
         }
 
         .content-section {
             display: none;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
         .content-section.active {
             display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            25% {
+                transform: translateY(-8px);
+            }
+            50% {
+                transform: translateY(-12px);
+            }
+            75% {
+                transform: translateY(-6px);
+            }
+        }
+
+        @keyframes buttonBounce {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+            }
+            50% {
+                transform: translateY(-4px) scale(1.02);
+            }
         }
 
         .section-title {
-            font-size: 22px;
-            color: #333;
-            margin-bottom: 20px;
-            border-bottom: 3px solid #667eea;
-            padding-bottom: 10px;
+            font-size: 24px;
+            color: var(--text-primary);
+            margin-bottom: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* SVG 아이콘 스타일 */
+        .icon-sm {
+            width: 32px;
+            height: 32px;
+            stroke-width: 2;
+            stroke: currentColor;
+            color: var(--text-primary);
+        }
+
+        .icon-xs {
+            width: 18px;
+            height: 18px;
+            stroke-width: 2;
+            stroke: currentColor;
+            display: inline-block;
+            margin-right: 6px;
+            vertical-align: middle;
+        }
+
+        h1 .icon-sm {
+            width: 32px;
+            height: 32px;
+            margin-right: 8px;
+            vertical-align: middle;
+            display: inline-block;
         }
 
         /* 폼 스타일 */
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 16px;
         }
 
         .form-group label {
             display: block;
             margin-bottom: 8px;
-            color: #555;
-            font-weight: 500;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 14px;
         }
 
         .form-group input,
         .form-group select,
         .form-group textarea {
             width: 100%;
-            padding: 10px;
-            border: 2px solid #ddd;
-            border-radius: 5px;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
             font-size: 14px;
             font-family: inherit;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
 
         .form-group textarea {
@@ -236,123 +355,428 @@
 
         .btn {
             padding: 12px 24px;
-            border: none;
-            border-radius: 5px;
+            border: 1px solid var(--border);
+            background: var(--bg-secondary);
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
+            font-size: 14px;
             transition: all 0.3s;
+            color: var(--text-primary);
+        }
+
+        .btn:hover {
+            background: var(--bg-primary);
+            border-color: var(--primary);
+            color: var(--primary);
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #0891b2 0%, #06b6d4 50%, #22d3ee 100%);
             color: white;
+            border: none;
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(56, 189, 248, 0.4);
+            animation: buttonBounce 0.6s ease-out;
         }
 
         .btn-secondary {
-            background: #e0e0e0;
-            color: #333;
+            background: var(--bg-primary);
+            color: var(--text-primary);
         }
 
         .btn-secondary:hover {
-            background: #d0d0d0;
+            background: linear-gradient(135deg, #ecf7fe 0%, #f0fafb 100%);
+            border-color: rgba(6, 182, 212, 0.5);
+            transform: translateY(-2px);
+            animation: buttonBounce 0.5s ease-out;
         }
 
         .btn-danger {
-            background: #ff6b6b;
+            background: var(--danger);
             color: white;
+            border: none;
         }
 
         .btn-danger:hover {
-            background: #ee5a52;
+            background: linear-gradient(135deg, #be185d 0%, #db2777 100%);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 16px rgba(219, 39, 119, 0.3);
+            animation: buttonBounce 0.6s ease-out;
         }
 
-        /* 리스트/테이블 스타일 */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        table th {
-            background: #f5f5f5;
-            padding: 15px;
-            text-align: left;
-            font-weight: 600;
-            color: #333;
-            border-bottom: 2px solid #667eea;
-        }
-
-        table td {
-            padding: 15px;
-            border-bottom: 1px solid #ddd;
-            color: #666;
-        }
-
-        table tr:hover {
-            background: #f9f9f9;
-        }
-
-        .alert-box {
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            font-weight: 500;
-        }
-
-        .alert-danger {
-            background: #ffe0e0;
-            border-left: 4px solid #ff6b6b;
-            color: #d63031;
-        }
-
-        .alert-warning {
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
-            color: #856404;
-        }
-
-        .alert-success {
-            background: #d4edda;
-            border-left: 4px solid #28a745;
-            color: #155724;
-        }
-
-        .alert-info {
-            background: #d1ecf1;
-            border-left: 4px solid #17a2b8;
-            color: #0c5460;
-        }
-
-        /* 대시보드 카드 */
+        /* 카드 스타일 */
         .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 20px;
-            margin-bottom: 30px;
+            margin-bottom: 32px;
         }
 
         .card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafb 100%);
+            border: 1px solid rgba(207, 250, 254, 0.5);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(6, 182, 212, 0.08);
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            box-shadow: 0 12px 24px rgba(6, 182, 212, 0.15);
+            transform: translateY(-6px);
+            animation: bounce 0.6s ease-out;
+        }
+
+        .card-stat {
+            background: linear-gradient(135deg, #0891b2 0%, #06b6d4 40%, #22d3ee 100%);
             color: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 28px;
+            box-shadow: 0 8px 20px rgba(6, 182, 212, 0.3);
+        }
+
+        .card-dday {
+            background: linear-gradient(135deg, #be185d 0%, #db2777 50%, #f43f5e 100%);
+            color: white;
+            box-shadow: 0 8px 20px rgba(219, 39, 119, 0.3);
+        }
+
+        .card-d1 {
+            background: linear-gradient(135deg, #ca8a04 0%, #eab308 50%, #facc15 100%);
+            color: #1e293b;
+            box-shadow: 0 8px 20px rgba(202, 138, 4, 0.25);
+        }
+
+        .card-d2 {
+            background: linear-gradient(135deg, #0369a1 0%, #0891b2 40%, #06b6d4 100%);
+            color: white;
+            box-shadow: 0 8px 20px rgba(3, 105, 161, 0.25);
         }
 
         .card-title {
             font-size: 14px;
             opacity: 0.9;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        /* 근무 일정 그리드 */
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+            margin-top: 24px;
+        }
+
+        .schedule-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafb 100%);
+            border: 2px solid rgba(207, 250, 254, 0.5);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.1);
+            transition: all 0.3s;
+        }
+
+        .schedule-card:hover {
+            border-color: rgba(6, 182, 212, 0.8);
+            box-shadow: 0 12px 24px rgba(6, 182, 212, 0.2);
+            transform: translateY(-6px);
+            animation: bounce 0.6s ease-out;
+        }
+
+        .schedule-title {
+            font-size: 16px;
+            font-weight: 700;
+            background: linear-gradient(90deg, #0891b2 0%, #06b6d4 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid rgba(6, 182, 212, 0.3);
+        }
+
+        .schedule-card table {
+            margin-top: 0;
+            box-shadow: none;
+        }
+
+        .schedule-card table th {
+            background: var(--bg-primary);
+            font-size: 12px;
+            padding: 12px;
+        }
+
+        .schedule-card table td {
+            padding: 12px;
+            font-size: 13px;
+        }
+
+        /* 달력 스타일 */
+        .calendar-container {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafb 100%);
+            border: 1px solid rgba(207, 250, 254, 0.5);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* 달력 페이지 전환 애니메이션 */
+        @keyframes slideLeft {
+            from { transform: translateX(20%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideRight {
+            from { transform: translateX(-20%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .calendar-grid.slide-left {
+            animation: slideLeft 0.4s ease forwards;
+        }
+
+        .calendar-grid.slide-right {
+            animation: slideRight 0.4s ease forwards;
+        }
+
+        /* 클릭 시 스케일 효과 */
+        .calendar-day.clicked {
+            transform: translateY(-4px) scale(0.96) !important;
+            box-shadow: 0 10px 18px rgba(6,182,212,0.18) !important;
+            transition: transform 0.18s ease-out;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .calendar-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 10px;
+        }
+
+        .calendar-nav button {
+            padding: 8px 12px;
+            background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(6, 182, 212, 0.2);
+        }
+
+        .calendar-nav button:hover {
+            background: linear-gradient(135deg, #0369a1 0%, #0891b2 100%);
+            transform: translateY(-2px) scale(1.05);
+            animation: buttonBounce 0.5s ease-out;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+
+        .calendar-weekday {
+            text-align: center;
+            font-weight: 700;
+            color: var(--text-secondary);
+            padding: 12px;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            border: 1px solid rgba(207, 250, 254, 0.4);
+            border-radius: 12px;
+            padding: 8px;
+            text-align: center;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafb 100%);
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(6, 182, 212, 0.05);
+        }
+
+        .calendar-day:hover {
+            border-color: rgba(6, 182, 212, 0.6);
+            background: linear-gradient(135deg, #ecf7fe 0%, #f0fafb 100%);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(6, 182, 212, 0.15);
+            animation: bounce 0.5s ease-out;
+        }
+
+        .calendar-day.other-month {
+            color: var(--text-secondary);
+            opacity: 0.5;
+        }
+
+        .calendar-day.today {
+            border: 2px solid rgba(6, 182, 212, 0.6);
+            background: linear-gradient(135deg, #cffafe 0%, #a5f3fc 100%);
+            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.2);
+        }
+
+        .calendar-day-number {
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+
+        .calendar-day-events {
+            font-size: 10px;
+            margin-top: 4px;
+        }
+
+        .calendar-event-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin: 2px 1px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+            box-shadow: 0 2px 4px rgba(6, 182, 212, 0.2);
         }
 
         .card-value {
-            font-size: 32px;
-            font-weight: bold;
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        /* 테이블 스타일 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafb 100%);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.08);
+        }
+
+        table th {
+            background: linear-gradient(135deg, #ecf7fe 0%, #f0fafb 100%);
+            padding: 16px;
+            text-align: left;
+            font-weight: 700;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border);
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        table td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        table tr:hover {
+            background: var(--bg-primary);
+        }
+
+        table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* 알림 박스 */
+        .alert-box {
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            font-weight: 500;
+            border-left: 4px solid;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            border-left-color: #f43f5e;
+            color: #991b1b;
+        }
+
+        .alert-warning {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-left-color: #eab308;
+            color: #92400e;
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border-left-color: #10b981;
+            color: #065f46;
+        }
+
+        .alert-info {
+            background: linear-gradient(135deg, #cffafe 0%, #a5f3fc 100%);
+            border-left-color: #06b6d4;
+            color: #1e40af;
+        }
+
+        /* 배지 */
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .badge-danger {
+            background: linear-gradient(135deg, #be185d 0%, #db2777 100%);
+            color: white;
+        }
+
+        .badge-warning {
+            background: linear-gradient(135deg, #ca8a04 0%, #eab308 100%);
+            color: white;
+        }
+
+        .badge-success {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+            font-size: 14px;
         }
 
         /* 모달 */
@@ -365,6 +789,8 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            animation: fadeIn 0.3s ease-in;
         }
 
         .modal.active {
@@ -374,72 +800,49 @@
         }
 
         .modal-content {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafb 100%);
+            padding: 32px;
+            border-radius: 20px;
             width: 90%;
-            max-width: 500px;
+            max-width: 540px;
+            box-shadow: 0 25px 50px -12px rgba(6, 182, 212, 0.15), 0 0 1px rgba(0, 0, 0, 0.05);
+            position: relative;
+            border: 1px solid rgba(207, 250, 254, 0.4);
         }
 
         .modal-header {
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            color: #333;
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: var(--text-primary);
         }
 
-        .close-btn {
-            position: absolute;
-            right: 20px;
-            top: 20px;
-            background: none;
-            border: none;
-            font-size: 28px;
-            cursor: pointer;
-            color: #999;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .badge-danger {
-            background: #ffe0e0;
-            color: #d63031;
-        }
-
-        .badge-warning {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .badge-success {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 40px;
-            color: #999;
-        }
-
+        /* 반응형 */
         @media (max-width: 768px) {
             .form-row {
                 grid-template-columns: 1fr;
             }
 
             .nav-tabs {
-                flex-wrap: wrap;
+                padding: 16px 20px;
+            }
+
+            .content-wrapper {
+                padding: 20px;
             }
 
             .header {
                 flex-direction: column;
-                gap: 15px;
+                gap: 16px;
+                padding: 16px 20px;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card-value {
+                font-size: 28px;
             }
         }
     </style>
@@ -448,7 +851,7 @@
     <!-- 로그인 페이지 -->
     <div class="login-page active" id="loginPage">
         <div class="login-box">
-            <h1>🥖 빵집 직원 시스템</h1>
+            <h1><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 8c0-2.21 1.79-4 4-4s4 1.79 4 4v1H6V8z"/><path d="M5 12h14v8H5z"/><path d="M9 15h2v2H9z"/><path d="M13 15h2v2h-2z"/></svg> Staff System</h1>
             <form id="loginForm">
                 <div class="form-group">
                     <label for="username">직원명</label>
@@ -460,13 +863,54 @@
                 </div>
                 <button type="submit" class="btn btn-primary">로그인</button>
             </form>
+            <div style="margin-top: 16px; text-align: center; font-size: 14px;">
+                계정이 없으신가요? <a href="#" onclick="showSignup()" style="color: #38bdf8; font-weight: 600; text-decoration: none;">회원가입</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 회원가입 페이지 -->
+    <div class="login-page" id="signupPage">
+        <div class="login-box">
+            <h1><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 8c0-2.21 1.79-4 4-4s4 1.79 4 4v1H6V8z"/><path d="M5 12h14v8H5z"/><path d="M9 15h2v2H9z"/><path d="M13 15h2v2h-2z"/></svg> Staff System</h1>
+            <form id="signupForm">
+                <div class="form-group">
+                    <label for="signupName">직원명</label>
+                    <input type="text" id="signupName" placeholder="직원명을 입력하세요" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupPhone">연락처</label>
+                    <input type="tel" id="signupPhone" placeholder="010-0000-0000" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword">비밀번호</label>
+                    <input type="password" id="signupPassword" placeholder="비밀번호를 입력하세요 (6자 이상)" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label for="signupPasswordConfirm">비밀번호 확인</label>
+                    <input type="password" id="signupPasswordConfirm" placeholder="비밀번호를 다시 입력하세요" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label for="signupShift">근무 조</label>
+                    <select id="signupShift" required>
+                        <option value="">선택하세요</option>
+                        <option value="morning"><svg class="icon-xs" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg> 오픈 (07:00 ~ 12:30)</option>
+                        <option value="middle"><svg class="icon-xs" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="6"/></svg> 미들 (12:30 ~ 18:00)</option>
+                        <option value="evening"><svg class="icon-xs" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg> 마감 (18:00 ~ 22:00)</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">회원가입</button>
+            </form>
+            <div style="margin-top: 16px; text-align: center; font-size: 14px;">
+                이미 계정이 있으신가요? <a href="#" onclick="showLogin()" style="color: #38bdf8; font-weight: 600; text-decoration: none;">로그인</a>
+            </div>
         </div>
     </div>
 
     <!-- 메인 페이지 -->
     <div class="main-page" id="mainPage">
         <div class="header">
-            <h1>🥖 빵집 직원 관리 시스템</h1>
+            <h1>🥖 Staff System</h1>
             <div class="user-info">
                 <span id="currentUser">직원명</span>
                 <button class="logout-btn" id="logoutBtn">로그아웃</button>
@@ -475,170 +919,236 @@
 
         <!-- 탭 네비게이션 -->
         <div class="nav-tabs">
-            <button class="tab-btn active" data-tab="dashboard">📊 대시보드</button>
+            <button class="tab-btn active" data-tab="dashboard"><svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg> 대시보드</button>
             <button class="tab-btn" data-tab="inventory">📦 재고 관리</button>
             <button class="tab-btn" data-tab="reservation">📅 예약 관리</button>
             <button class="tab-btn" data-tab="notice">📢 공지사항</button>
-            <button class="tab-btn" data-tab="schedule">⏰ 근무 일정</button>
+            <button class="tab-btn" data-tab="schedule"><svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg> 근무 일정</button>
             <button class="tab-btn" data-tab="sales">📈 판매 현황</button>
         </div>
 
-        <!-- 대시보드 섹션 -->
-        <div class="content-section active" id="dashboardSection">
-            <h2 class="section-title">📊 오늘의 현황</h2>
-            <div class="dashboard-grid">
-                <div class="card">
-                    <div class="card-title">오늘 판매액</div>
-                    <div class="card-value" id="todaySales">0원</div>
+        <div class="content-wrapper">
+            <!-- 대시보드 섹션 -->
+            <div class="content-section active" id="dashboardSection">
+                <h2 class="section-title"><svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg> 오늘의 현황</h2>
+                <div class="dashboard-grid">
+                    <div class="card card-stat">
+                        <div class="card-title">오늘 판매액</div>
+                        <div class="card-value" id="todaySales">0원</div>
+                    </div>
+                    <div class="card card-stat">
+                        <div class="card-title">예약 건수</div>
+                        <div class="card-value" id="reservationCount">0건</div>
+                    </div>
+                    <div class="card card-stat">
+                        <div class="card-title">폐기 예상 품목</div>
+                        <div class="card-value" id="expiringCount">0개</div>
+                    </div>
+                    <div class="card card-stat">
+                        <div class="card-title">당직 인원</div>
+                        <div class="card-value" id="staffCount">0명</div>
+                    </div>
                 </div>
-                <div class="card">
-                    <div class="card-title">예약 건수</div>
-                    <div class="card-value" id="reservationCount">0건</div>
-                </div>
-                <div class="card">
-                    <div class="card-title">폐기 예상 품목</div>
-                    <div class="card-value" id="expiringCount">0개</div>
-                </div>
-                <div class="card">
-                    <div class="card-title">당직 인원</div>
-                    <div class="card-value" id="staffCount">0명</div>
+
+                <h3 class="section-title">⚠️ 긴급 알림</h3>
+                <div id="alertsList">
+                    <div class="empty-state">현재 긴급 사항 없음</div>
                 </div>
             </div>
 
-            <h3 class="section-title">⚠️ 긴급 알림</h3>
-            <div id="alertsList">
-                <div class="empty-state">현재 긴급 사항 없음</div>
+            <!-- 재고 관리 섹션 -->
+            <div class="content-section" id="inventorySection">
+                <h2 class="section-title">📦 재고 관리</h2>
+                
+                <div style="margin-bottom: 20px;">
+                    <button class="btn btn-primary" onclick="openInventoryModal()">+ 새 상품 등록</button>
+                </div>
+
+                <!-- D-day 상태 요약 카드 -->
+                <div class="dashboard-grid" style="margin-bottom: 30px; grid-template-columns: repeat(3, 1fr);">
+                    <div class="card card-dday">
+                        <div class="card-title"><svg class="icon-xs" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg> D-DAY (오늘 폐기)</div>
+                        <div class="card-value" id="countDday">0개</div>
+                        <div id="listDday" style="font-size: 12px; margin-top: 10px;"></div>
+                    </div>
+                    <div class="card card-d1">
+                        <div class="card-title"><svg class="icon-xs" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg> D-1 (내일 폐기)</div>
+                        <div class="card-value" id="countD1">0개</div>
+                        <div id="listD1" style="font-size: 12px; margin-top: 10px;"></div>
+                    </div>
+                    <div class="card card-d2">
+                        <div class="card-title"><svg class="icon-xs" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg> D-2 (모레 폐기)</div>
+                        <div class="card-value" id="countD2">0개</div>
+                        <div id="listD2" style="font-size: 12px; margin-top: 10px;"></div>
+                    </div>
+                </div>
+
+                <h3>활성 상품 목록</h3>
+                <table id="inventoryTable">
+                    <thead>
+                        <tr>
+                            <th>상품명</th>
+                            <th>입고일</th>
+                            <th>유통기한</th>
+                            <th>상태</th>
+                            <th>수량</th>
+                            <th>관리</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventoryBody">
+                        <tr>
+                            <td colspan="6" class="empty-state">등록된 상품이 없습니다</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 예약 관리 섹션 -->
+            <div class="content-section" id="reservationSection">
+                <h2 class="section-title">📅 예약 관리</h2>
+                
+                <div style="margin-bottom: 20px;">
+                    <button class="btn btn-primary" onclick="openReservationModal()">+ 새 예약 등록</button>
+                </div>
+
+                <!-- 달력 -->
+                <div class="calendar-container">
+                    <div class="calendar-header">
+                        <h3 class="calendar-title" id="calendarTitle">2025년 12월</h3>
+                        <div class="calendar-nav">
+                            <button onclick="previousMonth()">← 이전</button>
+                            <button onclick="todayMonth()">오늘</button>
+                            <button onclick="nextMonth()">다음 →</button>
+                        </div>
+                    </div>
+                    <div class="calendar-grid" id="calendarGrid"></div>
+                </div>
+
+                <h3>예약 목록</h3>
+                <table id="reservationTable">
+                    <thead>
+                        <tr>
+                            <th>예약자</th>
+                            <th>예약 상품</th>
+                            <th>예약일</th>
+                            <th>수량</th>
+                            <th>연락처</th>
+                            <th>상태</th>
+                            <th>관리</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reservationBody">
+                        <tr>
+                            <td colspan="7" class="empty-state">등록된 예약이 없습니다</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 공지사항 섹션 -->
+            <div class="content-section" id="noticeSection">
+                <h2 class="section-title">📢 공지사항</h2>
+                
+                <div style="margin-bottom: 20px;">
+                    <button class="btn btn-primary" onclick="openNoticeModal()">+ 새 공지사항 작성</button>
+                </div>
+
+                <div id="noticeList">
+                    <div class="empty-state">등록된 공지사항이 없습니다</div>
+                </div>
+            </div>
+
+            <!-- 근무 일정 섹션 -->
+            <div class="content-section" id="scheduleSection">
+                <h2 class="section-title"><svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg> 근무 일정</h2>
+                
+                <div style="margin-bottom: 20px;">
+                    <button class="btn btn-primary" onclick="openScheduleModal()">+ 새 일정 등록</button>
+                </div>
+
+                <!-- 근무 조별 정리 -->
+                <div class="schedule-grid">
+                    <div class="schedule-card">
+                        <h3 class="schedule-title"><svg class="icon-xs" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2"/><line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2"/><line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2"/><line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2"/></svg> 오픈 근무조 (07:00 ~ 12:30)</h3>
+                        <table id="scheduleTableMorning">
+                            <thead>
+                                <tr>
+                                    <th>직원명</th>
+                                    <th>날짜</th>
+                                    <th>시간</th>
+                                    <th>관리</th>
+                                </tr>
+                            </thead>
+                            <tbody id="scheduleBodyMorning">
+                                <tr><td colspan="3" class="empty-state">등록된 일정이 없습니다</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="schedule-card">
+                        <h3 class="schedule-title"><svg class="icon-xs" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="6"/></svg> 미들 근무조 (12:30 ~ 18:00)</h3>
+                        <table id="scheduleTableMiddle">
+                            <thead>
+                                <tr>
+                                    <th>직원명</th>
+                                    <th>날짜</th>
+                                    <th>시간</th>
+                                    <th>관리</th>
+                                </tr>
+                            </thead>
+                            <tbody id="scheduleBodyMiddle">
+                                <tr><td colspan="3" class="empty-state">등록된 일정이 없습니다</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="schedule-card">
+                        <h3 class="schedule-title"><svg class="icon-xs" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg> 마감 근무조 (18:00 ~ 22:00)</h3>
+                        <table id="scheduleTableEvening">
+                            <thead>
+                                <tr>
+                                    <th>직원명</th>
+                                    <th>날짜</th>
+                                    <th>시간</th>
+                                    <th>관리</th>
+                                </tr>
+                            </thead>
+                            <tbody id="scheduleBodyEvening">
+                                <tr><td colspan="3" class="empty-state">등록된 일정이 없습니다</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 판매 현황 섹션 -->
+            <div class="content-section" id="salesSection">
+                <h2 class="section-title">📈 판매 현황</h2>
+                
+                <div style="margin-bottom: 20px;">
+                    <button class="btn btn-primary" onclick="openSalesModal()">+ 판매 기록 입력</button>
+                </div>
+
+                <table id="salesTable">
+                    <thead>
+                        <tr>
+                            <th>날짜</th>
+                            <th>상품명</th>
+                            <th>수량</th>
+                            <th>판매가</th>
+                            <th>소계</th>
+                            <th>판매자</th>
+                            <th>관리</th>
+                        </tr>
+                    </thead>
+                    <tbody id="salesBody">
+                        <tr>
+                            <td colspan="7" class="empty-state">판매 기록이 없습니다</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
-
-        <!-- 재고 관리 섹션 -->
-        <div class="content-section" id="inventorySection">
-            <h2 class="section-title">📦 재고 관리</h2>
-            
-            <div style="margin-bottom: 20px;">
-                <button class="btn btn-primary" onclick="openInventoryModal()">+ 새 상품 등록</button>
-            </div>
-
-            <h3>활성 상품 목록</h3>
-            <table id="inventoryTable">
-                <thead>
-                    <tr>
-                        <th>상품명</th>
-                        <th>입고일</th>
-                        <th>유통기한</th>
-                        <th>상태</th>
-                        <th>수량</th>
-                        <th>관리</th>
-                    </tr>
-                </thead>
-                <tbody id="inventoryBody">
-                    <tr>
-                        <td colspan="6" class="empty-state">등록된 상품이 없습니다</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- 예약 관리 섹션 -->
-        <div class="content-section" id="reservationSection">
-            <h2 class="section-title">📅 예약 관리</h2>
-            
-            <div style="margin-bottom: 20px;">
-                <button class="btn btn-primary" onclick="openReservationModal()">+ 새 예약 등록</button>
-            </div>
-
-            <h3>예약 목록</h3>
-            <table id="reservationTable">
-                <thead>
-                    <tr>
-                        <th>예약자</th>
-                        <th>예약 상품</th>
-                        <th>예약일</th>
-                        <th>수량</th>
-                        <th>예약가능</th>
-                        <th>연락처</th>
-                        <th>상태</th>
-                        <th>관리</th>
-                    </tr>
-                </thead>
-                <tbody id="reservationBody">
-                    <tr>
-                        <td colspan="8" class="empty-state">등록된 예약이 없습니다</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- 공지사항 섹션 -->
-        <div class="content-section" id="noticeSection">
-            <h2 class="section-title">📢 공지사항</h2>
-            
-            <div style="margin-bottom: 20px;">
-                <button class="btn btn-primary" onclick="openNoticeModal()">+ 새 공지사항 작성</button>
-            </div>
-
-            <div id="noticeList">
-                <div class="empty-state">등록된 공지사항이 없습니다</div>
-            </div>
-        </div>
-
-        <!-- 근무 일정 섹션 -->
-        <div class="content-section" id="scheduleSection">
-            <h2 class="section-title">⏰ 근무 일정</h2>
-            
-            <div style="margin-bottom: 20px;">
-                <button class="btn btn-primary" onclick="openScheduleModal()">+ 새 일정 등록</button>
-            </div>
-
-            <table id="scheduleTable">
-                <thead>
-                    <tr>
-                        <th>직원명</th>
-                        <th>날짜</th>
-                        <th>시작 시간</th>
-                        <th>종료 시간</th>
-                        <th>담당 업무</th>
-                        <th>관리</th>
-                    </tr>
-                </thead>
-                <tbody id="scheduleBody">
-                    <tr>
-                        <td colspan="6" class="empty-state">등록된 일정이 없습니다</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- 판매 현황 섹션 -->
-        <div class="content-section" id="salesSection">
-            <h2 class="section-title">📈 판매 현황</h2>
-            
-            <div style="margin-bottom: 20px;">
-                <button class="btn btn-primary" onclick="openSalesModal()">+ 판매 기록 입력</button>
-            </div>
-
-            <table id="salesTable">
-                <thead>
-                    <tr>
-                        <th>날짜</th>
-                        <th>상품명</th>
-                        <th>수량</th>
-                        <th>판매가</th>
-                        <th>소계</th>
-                        <th>판매자</th>
-                        <th>관리</th>
-                    </tr>
-                </thead>
-                <tbody id="salesBody">
-                    <tr>
-                        <td colspan="7" class="empty-state">판매 기록이 없습니다</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- 재고 등록 모달 -->
     <div class="modal" id="inventoryModal">
         <div class="modal-content">
             <div class="modal-header">상품 등록</div>
@@ -661,10 +1171,7 @@
                     <label for="productQuantity">수량</label>
                     <input type="number" id="productQuantity" placeholder="수량" min="1" required>
                 </div>
-                <div class="form-group">
-                    <label for="productPrice">가격</label>
-                    <input type="number" id="productPrice" placeholder="가격" min="0" required>
-                </div>
+                
                 <div class="btn-group">
                     <button type="submit" class="btn btn-primary">등록</button>
                     <button type="button" class="btn btn-secondary" onclick="closeInventoryModal()">취소</button>
@@ -756,26 +1263,93 @@
                     <label for="scheduleDate">날짜</label>
                     <input type="date" id="scheduleDate" required>
                 </div>
+                <div class="form-group">
+                    <label for="scheduleShift">근무 조</label>
+                    <select id="scheduleShift" required>
+                        <option value="">선택하세요</option>
+                        <option value="morning"><svg class="icon-xs" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2"/><line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2"/><line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2"/><line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2"/></svg> 오픈 근무조 (07:00 ~ 12:30)</option>
+                        <option value="middle"><svg class="icon-xs" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="6"/></svg> 미들 근무조 (12:30 ~ 18:00)</option>
+                        <option value="evening"><svg class="icon-xs" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg> 마감 근무조 (18:00 ~ 22:00)</option>
+                    </select>
+                </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="scheduleStart">시작 시간</label>
-                        <input type="time" id="scheduleStart" required>
+                        <label for="scheduleActualStart">실제 시작 (선택)</label>
+                        <div style="display:flex; gap:8px; align-items:center;">
+                        <select id="scheduleActualStart">
+                            <option value="">선택 (선택)</option>
+                            <!-- 시간 단위: 00시 ~ 23시 -->
+                            <option value="00:00">00시</option>
+                            <option value="01:00">01시</option>
+                            <option value="02:00">02시</option>
+                            <option value="03:00">03시</option>
+                            <option value="04:00">04시</option>
+                            <option value="05:00">05시</option>
+                            <option value="06:00">06시</option>
+                            <option value="07:00">07시</option>
+                            <option value="08:00">08시</option>
+                            <option value="09:00">09시</option>
+                            <option value="10:00">10시</option>
+                            <option value="11:00">11시</option>
+                            <option value="12:00">12시</option>
+                            <option value="13:00">13시</option>
+                            <option value="14:00">14시</option>
+                            <option value="15:00">15시</option>
+                            <option value="16:00">16시</option>
+                            <option value="17:00">17시</option>
+                            <option value="18:00">18시</option>
+                            <option value="19:00">19시</option>
+                            <option value="20:00">20시</option>
+                            <option value="21:00">21시</option>
+                            <option value="22:00">22시</option>
+                            <option value="23:00">23시</option>
+                        </select>
+                        <select id="scheduleActualStartMin">
+                            <option value="00">00분</option>
+                            <option value="15">15분</option>
+                            <option value="30">30분</option>
+                            <option value="45">45분</option>
+                        </select>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label for="scheduleEnd">종료 시간</label>
-                        <input type="time" id="scheduleEnd" required>
+                        <label for="scheduleActualEnd">실제 종료 (선택)</label>
+                        <div style="display:flex; gap:8px; align-items:center;">
+                        <select id="scheduleActualEnd">
+                            <option value="">선택 (선택)</option>
+                            <option value="00:00">00시</option>
+                            <option value="01:00">01시</option>
+                            <option value="02:00">02시</option>
+                            <option value="03:00">03시</option>
+                            <option value="04:00">04시</option>
+                            <option value="05:00">05시</option>
+                            <option value="06:00">06시</option>
+                            <option value="07:00">07시</option>
+                            <option value="08:00">08시</option>
+                            <option value="09:00">09시</option>
+                            <option value="10:00">10시</option>
+                            <option value="11:00">11시</option>
+                            <option value="12:00">12시</option>
+                            <option value="13:00">13시</option>
+                            <option value="14:00">14시</option>
+                            <option value="15:00">15시</option>
+                            <option value="16:00">16시</option>
+                            <option value="17:00">17시</option>
+                            <option value="18:00">18시</option>
+                            <option value="19:00">19시</option>
+                            <option value="20:00">20시</option>
+                            <option value="21:00">21시</option>
+                            <option value="22:00">22시</option>
+                            <option value="23:00">23시</option>
+                        </select>
+                        <select id="scheduleActualEndMin">
+                            <option value="00">00분</option>
+                            <option value="15">15분</option>
+                            <option value="30">30분</option>
+                            <option value="45">45분</option>
+                        </select>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="scheduleTask">담당 업무</label>
-                    <select id="scheduleTask" required>
-                        <option value="">선택하세요</option>
-                        <option value="판매">판매</option>
-                        <option value="제조">제조</option>
-                        <option value="배송">배송</option>
-                        <option value="재고관리">재고관리</option>
-                        <option value="청소">청소</option>
-                    </select>
                 </div>
                 <div class="btn-group">
                     <button type="submit" class="btn btn-primary">등록</button>
@@ -821,12 +1395,24 @@
     </div>
 
     <script>
-        // 더미 계정 (실제로는 서버에서 관리해야 함)
-        const dummyAccounts = {
-            'staff1': 'password123',
-            'staff2': 'password123',
-            'manager': 'manager123'
+        // 로컬스토리지 저장소
+        const store = {
+            get: (k, f) => {
+                try {
+                    return JSON.parse(localStorage.getItem(k)) ?? f;
+                } catch {
+                    return f;
+                }
+            },
+            set: (k, v) => localStorage.setItem(k, JSON.stringify(v))
         };
+
+        // 회원 정보 저장소
+        let users = store.get('users', [
+            { username: 'staff1', password: 'password123', name: '김철수', phone: '010-1234-5678', shift: 'morning', joinDate: '2025-01-01' },
+            { username: 'staff2', password: 'password123', name: '이영희', phone: '010-2345-6789', shift: 'middle', joinDate: '2025-01-02' },
+            { username: 'manager', password: 'manager123', name: '박매니저', phone: '010-3456-7890', shift: 'evening', joinDate: '2024-12-01' }
+        ]);
 
         // 데이터 저장소
         let appData = {
@@ -847,12 +1433,17 @@
             document.getElementById('salesDate').valueAsDate = new Date();
             document.getElementById('scheduleDate').valueAsDate = new Date();
             document.getElementById('reservationDate').valueAsDate = new Date();
+            // 달력 초기화
+            renderCalendar();
         });
 
         // 이벤트 리스너 설정
         function setupEventListeners() {
             // 로그인
             document.getElementById('loginForm').addEventListener('submit', handleLogin);
+            
+            // 회원가입
+            document.getElementById('signupForm').addEventListener('submit', handleSignup);
             
             // 탭 전환
             document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -887,9 +1478,11 @@
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
-            if (dummyAccounts[username] === password) {
+            const user = users.find(u => u.username === username && u.password === password);
+            if (user) {
                 appData.currentUser = username;
-                document.getElementById('currentUser').textContent = username;
+                appData.currentUserInfo = user;
+                document.getElementById('currentUser').textContent = user.name;
                 document.getElementById('loginPage').classList.remove('active');
                 document.getElementById('mainPage').classList.add('active');
                 updateDashboard();
@@ -898,10 +1491,66 @@
             }
         }
 
+        function showSignup() {
+            document.getElementById('loginPage').classList.remove('active');
+            document.getElementById('signupPage').classList.add('active');
+        }
+
+        function showLogin() {
+            document.getElementById('signupPage').classList.remove('active');
+            document.getElementById('loginPage').classList.add('active');
+        }
+
+        function handleSignup(e) {
+            e.preventDefault();
+            const name = document.getElementById('signupName').value;
+            const phone = document.getElementById('signupPhone').value;
+            const password = document.getElementById('signupPassword').value;
+            const passwordConfirm = document.getElementById('signupPasswordConfirm').value;
+            const shift = document.getElementById('signupShift').value;
+
+            if (password !== passwordConfirm) {
+                alert('비밀번호가 일치하지 않습니다!');
+                return;
+            }
+
+            if (password.length < 6) {
+                alert('비밀번호는 6자 이상이어야 합니다!');
+                return;
+            }
+
+            // 중복 확인
+            const username = name + Date.now().toString().slice(-4);
+            if (users.some(u => u.username === username)) {
+                alert('이미 존재하는 계정입니다!');
+                return;
+            }
+
+            // 새 사용자 추가
+            const newUser = {
+                username: username,
+                password: password,
+                name: name,
+                phone: phone,
+                shift: shift,
+                joinDate: new Date().toISOString().split('T')[0]
+            };
+
+            users.push(newUser);
+            store.set('users', users);
+
+            alert(`회원가입이 완료되었습니다!\\n계정: ${username}\\n비밀번호: ${password}`);
+            document.getElementById('signupForm').reset();
+            showLogin();
+        }
+
         // 로그아웃 처리
         function handleLogout() {
             appData.currentUser = null;
+            appData.currentUserInfo = null;
             document.getElementById('loginForm').reset();
+            document.getElementById('signupForm').reset();
+            document.getElementById('signupPage').classList.remove('active');
             document.getElementById('loginPage').classList.add('active');
             document.getElementById('mainPage').classList.remove('active');
         }
@@ -995,7 +1644,6 @@
                 date: document.getElementById('productDate').value,
                 expiry: document.getElementById('expiryDate').value,
                 quantity: parseInt(document.getElementById('productQuantity').value),
-                price: parseInt(document.getElementById('productPrice').value),
                 addedDate: new Date().toISOString()
             };
 
@@ -1025,6 +1673,7 @@
             appData.reservations.push(reservation);
             saveDataToLocalStorage();
             closeReservationModal();
+            renderCalendar();
             updateReservationTable();
             updateDashboard();
             alert('예약이 등록되었습니다!');
@@ -1056,9 +1705,17 @@
                 id: Date.now(),
                 name: document.getElementById('scheduleName').value,
                 date: document.getElementById('scheduleDate').value,
-                start: document.getElementById('scheduleStart').value,
-                end: document.getElementById('scheduleEnd').value,
-                task: document.getElementById('scheduleTask').value,
+                shift: document.getElementById('scheduleShift').value,
+                actualStart: (function(){
+                    const h = document.getElementById('scheduleActualStart').value || '';
+                    const m = document.getElementById('scheduleActualStartMin') ? document.getElementById('scheduleActualStartMin').value : '00';
+                    return h ? (h.slice(0,2) + ':' + (m || '00')) : '';
+                })(),
+                actualEnd: (function(){
+                    const h = document.getElementById('scheduleActualEnd').value || '';
+                    const m = document.getElementById('scheduleActualEndMin') ? document.getElementById('scheduleActualEndMin').value : '00';
+                    return h ? (h.slice(0,2) + ':' + (m || '00')) : '';
+                })(),
                 addedDate: new Date().toISOString()
             };
 
@@ -1097,6 +1754,7 @@
             
             if (appData.inventory.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="6" class="empty-state">등록된 상품이 없습니다</td></tr>';
+                updateDdayCards();
                 return;
             }
 
@@ -1106,14 +1764,21 @@
                 const daysLeft = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
                 
                 let status = '<span class="badge badge-success">정상</span>';
-                if (daysLeft === 0) status = '<span class="badge badge-danger">D-day (폐기)</span>';
-                else if (daysLeft === 1) status = '<span class="badge badge-warning">D-1</span>';
-                else if (daysLeft === 2) status = '<span class="badge badge-warning">D-2</span>';
-                else if (daysLeft < 0) status = '<span class="badge badge-danger">폐기됨</span>';
+                let bgColor = '';
+                if (daysLeft === 0) {
+                    status = '<span class="badge badge-danger"><svg class="icon-xs" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg> D-day (폐기)</span>';
+                    bgColor = 'background-color: #fee2e2;';
+                } else if (daysLeft === 1) {
+                    status = '<span class="badge badge-warning"><svg class="icon-xs" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg> D-1</span>';
+                    bgColor = 'background-color: #fff7ed;';
+                } else if (daysLeft === 2) {
+                    status = '<span class="badge badge-warning">🟡 D-2</span>';
+                    bgColor = 'background-color: #fef9c3;';
+                }
 
                 return `
-                    <tr>
-                        <td>${item.name}</td>
+                    <tr style="${bgColor}">
+                        <td><strong>${item.name}</strong></td>
                         <td>${item.date}</td>
                         <td>${item.expiry}</td>
                         <td>${status}</td>
@@ -1124,32 +1789,199 @@
                     </tr>
                 `;
             }).join('');
+            
+            updateDdayCards();
         }
 
-        function updateReservationTable() {
+        function updateDdayCards() {
+            const today = new Date();
+            const d0 = appData.inventory.filter(item => {
+                const expiryDate = new Date(item.expiry);
+                const daysLeft = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
+                return daysLeft <= 0;
+            });
+            const d1 = appData.inventory.filter(item => {
+                const expiryDate = new Date(item.expiry);
+                const daysLeft = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
+                return daysLeft === 1;
+            });
+            const d2 = appData.inventory.filter(item => {
+                const expiryDate = new Date(item.expiry);
+                const daysLeft = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
+                return daysLeft === 2;
+            });
+
+            document.getElementById('countDday').textContent = d0.length + '개';
+            document.getElementById('countD1').textContent = d1.length + '개';
+            document.getElementById('countD2').textContent = d2.length + '개';
+
+            document.getElementById('listDday').innerHTML = d0.length > 0 ? d0.map(i => `<div>• ${i.name} (${i.quantity}개)</div>`).join('') : '없음';
+            document.getElementById('listD1').innerHTML = d1.length > 0 ? d1.map(i => `<div>• ${i.name} (${i.quantity}개)</div>`).join('') : '없음';
+            document.getElementById('listD2').innerHTML = d2.length > 0 ? d2.map(i => `<div>• ${i.name} (${i.quantity}개)</div>`).join('') : '없음';
+        }
+
+        // 달력 변수
+        let currentCalendarMonth = new Date();
+
+        function renderCalendar() {
+            const year = currentCalendarMonth.getFullYear();
+            const month = currentCalendarMonth.getMonth();
+            
+            // 월 제목 업데이트
+            const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
+            document.getElementById('calendarTitle').textContent = `${year}년 ${monthNames[month]}`;
+
+            // 첫 날, 마지막 날 구하기
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            const startingDayOfWeek = firstDay.getDay();
+
+            const grid = document.getElementById('calendarGrid');
+            grid.innerHTML = '';
+
+            // 요일 헤더
+            const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
+            weekdays.forEach(day => {
+                const dayEl = document.createElement('div');
+                dayEl.className = 'calendar-weekday';
+                dayEl.textContent = day;
+                grid.appendChild(dayEl);
+            });
+
+            // 이전 달의 날짜
+            const prevMonthLastDay = new Date(year, month, 0).getDate();
+            for (let i = startingDayOfWeek - 1; i >= 0; i--) {
+                const dayEl = document.createElement('div');
+                dayEl.className = 'calendar-day other-month';
+                dayEl.textContent = prevMonthLastDay - i;
+                grid.appendChild(dayEl);
+            }
+
+            // 현재 달의 날짜
+            const today = new Date();
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayEl = document.createElement('div');
+                dayEl.className = 'calendar-day';
+                
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                
+                // 오늘 표시
+                if (year === today.getFullYear() && month === today.getMonth() && day === today.getDate()) {
+                    dayEl.classList.add('today');
+                }
+
+                // 날짜 번호
+                const dayNumber = document.createElement('div');
+                dayNumber.className = 'calendar-day-number';
+                dayNumber.textContent = day;
+                dayEl.appendChild(dayNumber);
+
+                // 예약 이벤트 표시
+                const reservations = appData.reservations.filter(r => r.date === dateStr);
+                if (reservations.length > 0) {
+                    const eventsEl = document.createElement('div');
+                    eventsEl.className = 'calendar-day-events';
+                    reservations.slice(0, 2).forEach(res => {
+                        const badge = document.createElement('div');
+                        badge.className = 'calendar-event-badge';
+                        badge.textContent = `${res.name} (${res.quantity})`;
+                        eventsEl.appendChild(badge);
+                    });
+                    if (reservations.length > 2) {
+                        const moreBadge = document.createElement('div');
+                        moreBadge.className = 'calendar-event-badge';
+                        moreBadge.textContent = `+${reservations.length - 2}`;
+                        eventsEl.appendChild(moreBadge);
+                    }
+                    dayEl.appendChild(eventsEl);
+                }
+
+                dayEl.style.cursor = 'pointer';
+                // Click: add a quick scale animation then filter
+                dayEl.addEventListener('click', (e) => {
+                    // add clicked class for a short effect
+                    dayEl.classList.add('clicked');
+                    setTimeout(() => dayEl.classList.remove('clicked'), 180);
+                    filterReservationsByDate(dateStr);
+                });
+                grid.appendChild(dayEl);
+            }
+
+            // 다음 달의 날짜
+            const totalCells = grid.children.length - 7; // 요일 헤더 제외
+            const remainingCells = 42 - totalCells; // 6주 * 7일
+            for (let day = 1; day <= remainingCells; day++) {
+                const dayEl = document.createElement('div');
+                dayEl.className = 'calendar-day other-month';
+                dayEl.textContent = day;
+                grid.appendChild(dayEl);
+            }
+        }
+
+
+        function previousMonth() {
+            const grid = document.getElementById('calendarGrid');
+            // play slide-right animation, then update month and re-render
+            grid.classList.remove('slide-left');
+            grid.classList.add('slide-right');
+            const handler = () => {
+                grid.classList.remove('slide-right');
+                currentCalendarMonth.setMonth(currentCalendarMonth.getMonth() - 1);
+                renderCalendar();
+                grid.removeEventListener('animationend', handler);
+            };
+            grid.addEventListener('animationend', handler);
+        }
+
+        function nextMonth() {
+            const grid = document.getElementById('calendarGrid');
+            // play slide-left animation, then update month and re-render
+            grid.classList.remove('slide-right');
+            grid.classList.add('slide-left');
+            const handler = () => {
+                grid.classList.remove('slide-left');
+                currentCalendarMonth.setMonth(currentCalendarMonth.getMonth() + 1);
+                renderCalendar();
+                grid.removeEventListener('animationend', handler);
+            };
+            grid.addEventListener('animationend', handler);
+        }
+
+        function todayMonth() {
+            currentCalendarMonth = new Date();
+            renderCalendar();
+        }
+
+        function filterReservationsByDate(dateStr) {
+            const filtered = appData.reservations.filter(r => r.date === dateStr);
             const tbody = document.getElementById('reservationBody');
             
-            if (appData.reservations.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" class="empty-state">등록된 예약이 없습니다</td></tr>';
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="empty-state">${dateStr}에 예약이 없습니다</td></tr>`;
                 return;
             }
 
-            tbody.innerHTML = appData.reservations.map(res => {
-                return `
-                    <tr>
-                        <td>${res.name}</td>
-                        <td>${res.product}</td>
-                        <td>${res.date}</td>
-                        <td>${res.quantity}</td>
-                        <td>${res.date}</td>
-                        <td>${res.phone}</td>
-                        <td>${res.status}</td>
-                        <td>
-                            <button class="btn btn-danger" style="padding: 5px 10px; font-size: 12px;" onclick="deleteReservation(${res.id})">삭제</button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
+            tbody.innerHTML = filtered.map(res => `
+                <tr>
+                    <td><strong>${res.name}</strong></td>
+                    <td>${res.product}</td>
+                    <td>${res.date}</td>
+                    <td>${res.quantity}</td>
+                    <td>${res.phone || '-'}</td>
+                    <td>
+                        <select class="input" style="width: 100px;" onchange="setResvStatus(${res.id}, this.value)">
+                            <option ${res.status === '예정' ? 'selected' : ''}>예정</option>
+                            <option ${res.status === '대기' ? 'selected' : ''}>대기</option>
+                            <option ${res.status === '취소' ? 'selected' : ''}>취소</option>
+                            <option ${res.status === '완료' ? 'selected' : ''}>완료</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button class="btn btn-danger" style="padding: 5px 10px; font-size: 12px;" onclick="deleteReservation(${res.id})">삭제</button>
+                    </td>
+                </tr>
+            `).join('');
         }
 
         function updateNoticeList() {
@@ -1179,27 +2011,94 @@
         }
 
         function updateScheduleTable() {
-            const tbody = document.getElementById('scheduleBody');
+            const tbody = document.getElementById('scheduleBodyMorning');
+            const tbodyMiddle = document.getElementById('scheduleBodyMiddle');
+            const tbodyEvening = document.getElementById('scheduleBodyEvening');
             
-            if (appData.schedule.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">등록된 일정이 없습니다</td></tr>';
-                return;
-            }
+            const morning = appData.schedule.filter(s => s.shift === 'morning');
+            const middle = appData.schedule.filter(s => s.shift === 'middle');
+            const evening = appData.schedule.filter(s => s.shift === 'evening');
 
-            tbody.innerHTML = appData.schedule.map(sched => {
+            // 오전 근무조
+            tbody.innerHTML = morning.length ? morning.map(sched => {
+                const scheduledRange = '07:00 ~ 12:30';
+                let actualLine = '';
+                let overtimeBadge = '';
+                if (sched.actualStart || sched.actualEnd) {
+                    actualLine = `실제: ${sched.actualStart || '-'} ~ ${sched.actualEnd || '-'}`;
+                    if (sched.actualEnd) {
+                        const scheduledEnd = new Date(sched.date + 'T12:30:00');
+                        const actualEnd = new Date(sched.date + 'T' + sched.actualEnd + ':00');
+                        if (actualEnd > scheduledEnd) {
+                            const diffMins = Math.round((actualEnd - scheduledEnd) / 60000);
+                            overtimeBadge = `<span class="badge badge-warning">연장 +${diffMins}분</span>`;
+                        }
+                    }
+                }
                 return `
-                    <tr>
-                        <td>${sched.name}</td>
-                        <td>${sched.date}</td>
-                        <td>${sched.start}</td>
-                        <td>${sched.end}</td>
-                        <td>${sched.task}</td>
-                        <td>
-                            <button class="btn btn-danger" style="padding: 5px 10px; font-size: 12px;" onclick="deleteSchedule(${sched.id})">삭제</button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
+                <tr>
+                    <td><strong>${sched.name}</strong></td>
+                    <td>${sched.date}</td>
+                    <td>${scheduledRange}${actualLine ? '<br>' + actualLine + ' ' + overtimeBadge : ''}</td>
+                    <td>
+                        <button class="btn btn-danger" style="padding: 5px 10px; font-size: 12px;" onclick="deleteSchedule(${sched.id})">삭제</button>
+                    </td>
+                </tr>
+            `}).join('') : '<tr><td colspan="4" class="empty-state">등록된 일정이 없습니다</td></tr>';
+
+            // 미들 근무조
+            tbodyMiddle.innerHTML = middle.length ? middle.map(sched => {
+                const scheduledRange = '12:30 ~ 18:00';
+                let actualLine = '';
+                let overtimeBadge = '';
+                if (sched.actualStart || sched.actualEnd) {
+                    actualLine = `실제: ${sched.actualStart || '-'} ~ ${sched.actualEnd || '-'}`;
+                    if (sched.actualEnd) {
+                        const scheduledEnd = new Date(sched.date + 'T18:00:00');
+                        const actualEnd = new Date(sched.date + 'T' + sched.actualEnd + ':00');
+                        if (actualEnd > scheduledEnd) {
+                            const diffMins = Math.round((actualEnd - scheduledEnd) / 60000);
+                            overtimeBadge = `<span class="badge badge-warning">연장 +${diffMins}분</span>`;
+                        }
+                    }
+                }
+                return `
+                <tr>
+                    <td><strong>${sched.name}</strong></td>
+                    <td>${sched.date}</td>
+                    <td>${scheduledRange}${actualLine ? '<br>' + actualLine + ' ' + overtimeBadge : ''}</td>
+                    <td>
+                        <button class="btn btn-danger" style="padding: 5px 10px; font-size: 12px;" onclick="deleteSchedule(${sched.id})">삭제</button>
+                    </td>
+                </tr>
+            `}).join('') : '<tr><td colspan="4" class="empty-state">등록된 일정이 없습니다</td></tr>';
+
+            // 마감 근무조
+            tbodyEvening.innerHTML = evening.length ? evening.map(sched => {
+                const scheduledRange = '18:00 ~ 22:00';
+                let actualLine = '';
+                let overtimeBadge = '';
+                if (sched.actualStart || sched.actualEnd) {
+                    actualLine = `실제: ${sched.actualStart || '-'} ~ ${sched.actualEnd || '-'}`;
+                    if (sched.actualEnd) {
+                        const scheduledEnd = new Date(sched.date + 'T22:00:00');
+                        const actualEnd = new Date(sched.date + 'T' + sched.actualEnd + ':00');
+                        if (actualEnd > scheduledEnd) {
+                            const diffMins = Math.round((actualEnd - scheduledEnd) / 60000);
+                            overtimeBadge = `<span class="badge badge-warning">연장 +${diffMins}분</span>`;
+                        }
+                    }
+                }
+                return `
+                <tr>
+                    <td><strong>${sched.name}</strong></td>
+                    <td>${sched.date}</td>
+                    <td>${scheduledRange}${actualLine ? '<br>' + actualLine + ' ' + overtimeBadge : ''}</td>
+                    <td>
+                        <button class="btn btn-danger" style="padding: 5px 10px; font-size: 12px;" onclick="deleteSchedule(${sched.id})">삭제</button>
+                    </td>
+                </tr>
+            `}).join('') : '<tr><td colspan="4" class="empty-state">등록된 일정이 없습니다</td></tr>';
         }
 
         function updateSalesTable() {
@@ -1314,6 +2213,7 @@
             if (confirm('삭제하시겠습니까?')) {
                 appData.reservations = appData.reservations.filter(item => item.id !== id);
                 saveDataToLocalStorage();
+                renderCalendar();
                 updateReservationTable();
                 updateDashboard();
             }
