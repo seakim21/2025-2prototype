@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>빵집 직원 전용 시스템</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 로그인 페이지 */
+        .login-page {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .login-page.active {
+            display: flex;
+        }
+
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-box h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        .login-box .form-group {
+            margin-bottom: 20px;
+        }
+
+        .login-box label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .login-box input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .login-box button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .login-box button:hover {
+            transform: translateY(-2px);
+        }
+
+        /* 메인 페이지 */
+        .main-page {
+            display: none;
+        }
+
+        .main-page.active {
+            display: block;
+        }
+
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 24px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-info span {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .logout-btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #ee5a52;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-tabs button {
+            flex: 1;
+            padding: 12px 20px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            color: #666;
+        }
+
+        .nav-tabs button.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .content-section {
+            display: none;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 22px;
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        /* 폼 스타일 */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        .btn-danger {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #ee5a52;
+        }
+
+        /* 리스트/테이블 스타일 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table th {
+            background: #f5f5f5;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #667eea;
+        }
+
+        table td {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            color: #666;
+        }
+
+        table tr:hover {
+            background: #f9f9f9;
+        }
+
+        .alert-box {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .alert-danger {
+            background: #ffe0e0;
+            border-left: 4px solid #ff6b6b;
+            color: #d63031;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            color: #856404;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            color: #155724;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            color: #0c5460;
+        }
+
+        /* 대시보드 카드 */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-title {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .card-value {
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        /* 모달 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .modal-header {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .close-btn {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .badge-danger {
+            background: #ffe0e0;
+            color: #d63031;
+        }
+
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-tabs {
+                flex-wrap: wrap;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 로그인 페이지 -->
+    <div class="login-page active" id="loginPage">
+        <div class="login-box">
+            <h1>🥖 빵집 직원 시스템</h1>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">직원명</label>
+                    <input type="text" id="username" placeholder="직원명을 입력하세요" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">비밀번호</label>
+                    <input type="password" id="password" placeholder="비밀번호를 입력하세요" required>
+                </div>
+                <button type="submit" class="btn btn-primary">로그인</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 메인 페이지 -->
+    <div class="main-page" id="mainPage">
+        <div class="header">
+            <h1>🥖 빵집 직원 관리 시스템</h1>
+            <div class="user-info">
+                <span id="currentUser">직원명</span>
+                <button class="logout-btn" id="logoutBtn">로그아웃</button>
+            </div>
+        </div>
+
+        <!-- 탭 네비게이션 -->
+        <div class="nav-tabs">
+            <button class="tab-btn active" data-tab="dashboard">📊 대시보드</button>
+            <button class="tab-btn" data-tab="inventory">📦 재고 관리</button>
+            <button class="tab-btn" data-tab="reservation">📅 예약 관리</button>
+            <button class="tab-btn" data-tab="notice">📢 공지사항</button>
+            <button class="tab-btn" data-tab="schedule">⏰ 근무 일정</button>
+            <button class="tab-btn" data-tab="sales">📈 판매 현황</button>
+        </div>
+
+        <!-- 대시보드 섹션 -->
+        <div class="content-section active" id="dashboardSection">
+            <h2 class="section-title">📊 오늘의 현황</h2>
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div class="card-title">오늘 판매액</div>
+                    <div class="card-value" id="todaySales">0원</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">예약 건수</div>
+                    <div class="card-value" id="reservationCount">0건</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">폐기 예상 품목</div>
+                    <div class="card-value" id="expiringCount">0개</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">당직 인원</div>
+                    <div class="card-value" id="staffCount">0명</div>
+                </div>
+            </div>
+
+            <h3 class="section-title">⚠️ 긴급 알림</h3>
+            <div id="alertsList">
+                <div class="empty-state">현재 긴급 사항 없음</div>
+            </div>
+        </div>
+
+        <!-- 재고 관리 섹션 -->
+        <div class="content-section" id="inventorySection">
+            <h2 class="section-title">📦 재고 관리</h2>
+            
+            <div style="margin-bottom: 20px;">
+                <button class="btn btn-primary" onclick="openInventoryModal()">+ 새 상품 등록</button>
+            </div>
+
+            <h3>활성 상품 목록</h3>
+            <table id="inventoryTable">
+                <thead>
+                    <tr>
+                        <th>상품명</th>
+                        <th>입고일</th>
+                        <th>유통기한</th>
+                        <th>상태</th>
+                        <th>수량</th>
+                        <th>관리</th>
+                    </tr>
+                </thead>
+                <tbody id="inventoryBody">
+                    <tr>
+                        <td colspan="6" class="empty-state">등록된 상품이 없습니다</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 예약 관리 섹션 -->
+        <div class="content-section" id="reservationSection">
+            <h2 class="section-title">📅 예약 관리</h2>
+            
+            <div style="margin-bottom: 20px;">
+                <button class="btn btn-primary" onclick="openReservationModal()">+ 새 예약 등록</button>
+            </div>
+
+            <h3>예약 목록</h3>
+            <table id="reservationTable">
+                <thead>
+                    <tr>
+                        <th>예약자</th>
+                        <th>예약 상품</th>
+                        <th>예약일</th>
+                        <th>수량</th>
+                        <th>예약가능</th>
+                        <th>연락처</th>
+                        <th>상태</th>
+                        <th>관리</th>
+                    </tr>
+                </thead>
+                <tbody id="reservationBody">
+                    <tr>
+                        <td colspan="8" class="empty-state">등록된 예약이 없습니다</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 공지사항 섹션 -->
+        <div class="content-section" id="noticeSection">
+            <h2 class="section-title">📢 공지사항</h2>
+            
+            <div style="margin-bottom: 20px;">
+                <button class="btn btn-primary" onclick="openNoticeModal()">+ 새 공지사항 작성</button>
+            </div>
+
+            <div id="noticeList">
+                <div class="empty-state">등록된 공지사항이 없습니다</div>
+            </div>
+        </div>
+
+        <!-- 근무 일정 섹션 -->
+        <div class="content-section" id="scheduleSection">
+            <h2 class="section-title">⏰ 근무 일정</h2>
+            
+            <div style="margin-bottom: 20px;">
+                <button class="btn btn-primary" onclick="openScheduleModal()">+ 새 일정 등록</button>
+            </div>
+
+            <table id="scheduleTable">
+                <thead>
+                    <tr>
+                        <th>직원명</th>
+                        <th>날짜</th>
+                        <th>시작 시간</th>
+                        <th>종료 시간</th>
+                        <th>담당 업무</th>
+                        <th>관리</th>
+                    </tr>
+                </thead>
+                <tbody id="scheduleBody">
+                    <tr>
+                        <td colspan="6" class="empty-state">등록된 일정이 없습니다</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 판매 현황 섹션 -->
+        <div class="content-section" id="salesSection">
+            <h2 class="section-title">📈 판매 현황</h2>
+            
+            <div style="margin-bottom: 20px;">
+                <button class="btn btn-primary" onclick="openSalesModal()">+ 판매 기록 입력</button>
+            </div>
+
+            <table id="salesTable">
+                <thead>
+                    <tr>
+                        <th>날짜</th>
+                        <th>상품명</th>
+                        <th>수량</th>
+                        <th>판매가</th>
+                        <th>소계</th>
+                        <th>판매자</th>
+                        <th>관리</th>
+                    </tr>
+                </thead>
+                <tbody id="salesBody">
+                    <tr>
+                        <td colspan="7" class="empty-state">판매 기록이 없습니다</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 재고 등록 모달 -->
+    <div class="modal" id="inventoryModal">
+        <div class="modal-content">
+            <div class="modal-header">상품 등록</div>
+            <form id="inventoryForm">
+                <div class="form-group">
+                    <label for="productName">상품명</label>
+                    <input type="text" id="productName" placeholder="예: 통곡물식빵" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="productDate">입고일</label>
+                        <input type="date" id="productDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="expiryDate">유통기한</label>
+                        <input type="date" id="expiryDate" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="productQuantity">수량</label>
+                    <input type="number" id="productQuantity" placeholder="수량" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="productPrice">가격</label>
+                    <input type="number" id="productPrice" placeholder="가격" min="0" required>
+                </div>
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary">등록</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeInventoryModal()">취소</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 예약 등록 모달 -->
+    <div class="modal" id="reservationModal">
+        <div class="modal-content">
+            <div class="modal-header">예약 등록</div>
+            <form id="reservationForm">
+                <div class="form-group">
+                    <label for="reservationName">예약자명</label>
+                    <input type="text" id="reservationName" placeholder="예약자명" required>
+                </div>
+                <div class="form-group">
+                    <label for="reservationPhone">연락처</label>
+                    <input type="tel" id="reservationPhone" placeholder="010-0000-0000" required>
+                </div>
+                <div class="form-group">
+                    <label for="reservationProduct">상품명</label>
+                    <input type="text" id="reservationProduct" placeholder="상품명" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="reservationQuantity">수량</label>
+                        <input type="number" id="reservationQuantity" placeholder="수량" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reservationDate">예약날짜</label>
+                        <input type="date" id="reservationDate" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="reservationNote">특수 요청사항</label>
+                    <textarea id="reservationNote" placeholder="특수 요청사항 (선택)"></textarea>
+                </div>
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary">등록</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeReservationModal()">취소</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 공지사항 등록 모달 -->
+    <div class="modal" id="noticeModal">
+        <div class="modal-content">
+            <div class="modal-header">공지사항 작성</div>
+            <form id="noticeForm">
+                <div class="form-group">
+                    <label for="noticeTitle">제목</label>
+                    <input type="text" id="noticeTitle" placeholder="제목" required>
+                </div>
+                <div class="form-group">
+                    <label for="noticeContent">내용</label>
+                    <textarea id="noticeContent" placeholder="내용" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="noticeCategory">카테고리</label>
+                    <select id="noticeCategory" required>
+                        <option value="">선택하세요</option>
+                        <option value="긴급공지">긴급공지</option>
+                        <option value="일반공지">일반공지</option>
+                        <option value="행사">행사</option>
+                        <option value="교육">교육</option>
+                    </select>
+                </div>
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary">작성</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeNoticeModal()">취소</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 근무 일정 등록 모달 -->
+    <div class="modal" id="scheduleModal">
+        <div class="modal-content">
+            <div class="modal-header">근무 일정 등록</div>
+            <form id="scheduleForm">
+                <div class="form-group">
+                    <label for="scheduleName">직원명</label>
+                    <input type="text" id="scheduleName" placeholder="직원명" required>
+                </div>
+                <div class="form-group">
+                    <label for="scheduleDate">날짜</label>
+                    <input type="date" id="scheduleDate" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="scheduleStart">시작 시간</label>
+                        <input type="time" id="scheduleStart" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="scheduleEnd">종료 시간</label>
+                        <input type="time" id="scheduleEnd" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="scheduleTask">담당 업무</label>
+                    <select id="scheduleTask" required>
+                        <option value="">선택하세요</option>
+                        <option value="판매">판매</option>
+                        <option value="제조">제조</option>
+                        <option value="배송">배송</option>
+                        <option value="재고관리">재고관리</option>
+                        <option value="청소">청소</option>
+                    </select>
+                </div>
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary">등록</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeScheduleModal()">취소</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 판매 기록 등록 모달 -->
+    <div class="modal" id="salesModal">
+        <div class="modal-content">
+            <div class="modal-header">판매 기록 입력</div>
+            <form id="salesForm">
+                <div class="form-group">
+                    <label for="salesDate">날짜</label>
+                    <input type="date" id="salesDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="salesProduct">상품명</label>
+                    <input type="text" id="salesProduct" placeholder="상품명" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="salesQuantity">수량</label>
+                        <input type="number" id="salesQuantity" placeholder="수량" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="salesPrice">판매가</label>
+                        <input type="number" id="salesPrice" placeholder="판매가" min="0" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="salesStaff">판매자</label>
+                    <input type="text" id="salesStaff" placeholder="판매자" required>
+                </div>
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary">입력</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeSalesModal()">취소</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // 더미 계정 (실제로는 서버에서 관리해야 함)
+        const dummyAccounts = {
+            'staff1': 'password123',
+            'staff2': 'password123',
+            'manager': 'manager123'
+        };
+
+        // 데이터 저장소
+        let appData = {
+            inventory: [],
+            reservations: [],
+            notices: [],
+            schedule: [],
+            sales: [],
+            currentUser: null
+        };
+
+        // 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDataFromLocalStorage();
+            setupEventListeners();
+            // 날짜 기본값 설정
+            document.getElementById('productDate').valueAsDate = new Date();
+            document.getElementById('salesDate').valueAsDate = new Date();
+            document.getElementById('scheduleDate').valueAsDate = new Date();
+            document.getElementById('reservationDate').valueAsDate = new Date();
+        });
+
+        // 이벤트 리스너 설정
+        function setupEventListeners() {
+            // 로그인
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+            
+            // 탭 전환
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    switchTab(this.dataset.tab);
+                });
+            });
+
+            // 로그아웃
+            document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+
+            // 폼 제출
+            document.getElementById('inventoryForm').addEventListener('submit', addInventory);
+            document.getElementById('reservationForm').addEventListener('submit', addReservation);
+            document.getElementById('noticeForm').addEventListener('submit', addNotice);
+            document.getElementById('scheduleForm').addEventListener('submit', addSchedule);
+            document.getElementById('salesForm').addEventListener('submit', addSales);
+
+            // 모달 배경 클릭시 닫기
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        this.classList.remove('active');
+                    }
+                });
+            });
+        }
+
+        // 로그인 처리
+        function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (dummyAccounts[username] === password) {
+                appData.currentUser = username;
+                document.getElementById('currentUser').textContent = username;
+                document.getElementById('loginPage').classList.remove('active');
+                document.getElementById('mainPage').classList.add('active');
+                updateDashboard();
+            } else {
+                alert('직원명 또는 비밀번호가 틀렸습니다!');
+            }
+        }
+
+        // 로그아웃 처리
+        function handleLogout() {
+            appData.currentUser = null;
+            document.getElementById('loginForm').reset();
+            document.getElementById('loginPage').classList.add('active');
+            document.getElementById('mainPage').classList.remove('active');
+        }
+
+        // 탭 전환
+        function switchTab(tabName) {
+            // 모든 탭 버튼 비활성화
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // 모든 콘텐츠 숨기기
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // 해당 탭 활성화
+            event.target.classList.add('active');
+            document.getElementById(tabName + 'Section').classList.add('active');
+
+            // 탭별 업데이트
+            if (tabName === 'inventory') {
+                updateInventoryTable();
+            } else if (tabName === 'reservation') {
+                updateReservationTable();
+            } else if (tabName === 'notice') {
+                updateNoticeList();
+            } else if (tabName === 'schedule') {
+                updateScheduleTable();
+            } else if (tabName === 'sales') {
+                updateSalesTable();
+            }
+        }
+
+        // 모달 열기/닫기 함수들
+        function openInventoryModal() {
+            document.getElementById('inventoryModal').classList.add('active');
+        }
+
+        function closeInventoryModal() {
+            document.getElementById('inventoryModal').classList.remove('active');
+            document.getElementById('inventoryForm').reset();
+            document.getElementById('productDate').valueAsDate = new Date();
+        }
+
+        function openReservationModal() {
+            document.getElementById('reservationModal').classList.add('active');
+        }
+
+        function closeReservationModal() {
+            document.getElementById('reservationModal').classList.remove('active');
+            document.getElementById('reservationForm').reset();
+            document.getElementById('reservationDate').valueAsDate = new Date();
+        }
+
+        function openNoticeModal() {
+            document.getElementById('noticeModal').classList.add('active');
+        }
+
+        function closeNoticeModal() {
+            document.getElementById('noticeModal').classList.remove('active');
+            document.getElementById('noticeForm').reset();
+        }
+
+        function openScheduleModal() {
+            document.getElementById('scheduleModal').classList.add('active');
+        }
+
+        function closeScheduleModal() {
+            document.getElementById('scheduleModal').classList.remove('active');
+            document.getElementById('scheduleForm').reset();
+            document.getElementById('scheduleDate').valueAsDate = new Date();
+        }
+
+        function openSalesModal() {
+            document.getElementById('salesModal').classList.add('active');
+        }
+
+        function closeSalesModal() {
+            document.getElementById('salesModal').classList.remove('active');
+            document.getElementById('salesForm').reset();
+            document.getElementById('salesDate').valueAsDate = new Date();
+        }
+
+        // 재고 추가
+        function addInventory(e) {
+            e.preventDefault();
+            const product = {
+                id: Date.now(),
+                name: document.getElementById('productName').value,
+                date: document.getElementById('productDate').value,
+                expiry: document.getElementById('expiryDate').value,
+                quantity: parseInt(document.getElementById('productQuantity').value),
+                price: parseInt(document.getElementById('productPrice').value),
+                addedDate: new Date().toISOString()
+            };
+
+            appData.inventory.push(product);
+            saveDataToLocalStorage();
+            closeInventoryModal();
+            updateInventoryTable();
+            updateDashboard();
+            alert('상품이 등록되었습니다!');
+        }
+
+        // 예약 추가
+        function addReservation(e) {
+            e.preventDefault();
+            const reservation = {
+                id: Date.now(),
+                name: document.getElementById('reservationName').value,
+                phone: document.getElementById('reservationPhone').value,
+                product: document.getElementById('reservationProduct').value,
+                quantity: parseInt(document.getElementById('reservationQuantity').value),
+                date: document.getElementById('reservationDate').value,
+                note: document.getElementById('reservationNote').value,
+                status: '예정',
+                addedDate: new Date().toISOString()
+            };
+
+            appData.reservations.push(reservation);
+            saveDataToLocalStorage();
+            closeReservationModal();
+            updateReservationTable();
+            updateDashboard();
+            alert('예약이 등록되었습니다!');
+        }
+
+        // 공지사항 추가
+        function addNotice(e) {
+            e.preventDefault();
+            const notice = {
+                id: Date.now(),
+                title: document.getElementById('noticeTitle').value,
+                content: document.getElementById('noticeContent').value,
+                category: document.getElementById('noticeCategory').value,
+                author: appData.currentUser,
+                date: new Date().toISOString()
+            };
+
+            appData.notices.unshift(notice);
+            saveDataToLocalStorage();
+            closeNoticeModal();
+            updateNoticeList();
+            alert('공지사항이 작성되었습니다!');
+        }
+
+        // 근무 일정 추가
+        function addSchedule(e) {
+            e.preventDefault();
+            const schedule = {
+                id: Date.now(),
+                name: document.getElementById('scheduleName').value,
+                date: document.getElementById('scheduleDate').value,
+                start: document.getElementById('scheduleStart').value,
+                end: document.getElementById('scheduleEnd').value,
+                task: document.getElementById('scheduleTask').value,
+                addedDate: new Date().toISOString()
+            };
+
+            appData.schedule.push(schedule);
+            saveDataToLocalStorage();
+            closeScheduleModal();
+            updateScheduleTable();
+            alert('일정이 등록되었습니다!');
+        }
+
+        // 판매 기록 추가
+        function addSales(e) {
+            e.preventDefault();
+            const sales = {
+                id: Date.now(),
+                date: document.getElementById('salesDate').value,
+                product: document.getElementById('salesProduct').value,
+                quantity: parseInt(document.getElementById('salesQuantity').value),
+                price: parseInt(document.getElementById('salesPrice').value),
+                staff: document.getElementById('salesStaff').value,
+                total: parseInt(document.getElementById('salesQuantity').value) * parseInt(document.getElementById('salesPrice').value),
+                addedDate: new Date().toISOString()
+            };
+
+            appData.sales.push(sales);
+            saveDataToLocalStorage();
+            closeSalesModal();
+            updateSalesTable();
+            updateDashboard();
+            alert('판매 기록이 입력되었습니다!');
+        }
+
+        // 테이블 업데이트
+        function updateInventoryTable() {
+            const tbody = document.getElementById('inventoryBody');
+            
+            if (appData.inventory.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">등록된 상품이 없습니다</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = appData.inventory.map(item => {
+                const today = new Date();
+                const expiryDate = new Date(item.expiry);
+                const daysLeft = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
+                
+                let status = '<span class="badge badge-success">정상</span>';
+                if (daysLeft === 0) status = '<span class="badge badge-danger">D-day (폐기)</span>';
+                else if (daysLeft === 1) status = '<span class="badge badge-warning">D-1</span>';
+                else if (daysLeft === 2) status = '<span class="badge badge-warning">D-2</span>';
+                else if (daysLeft < 0) status = '<span class="badge badge-danger">폐기됨</span>';
+
+                return `
+                    <tr>
+                        <td>${item.name}</td>
+                        <td>${item.date}</td>
+                        <td>${item.expiry}</td>
+                        <td>${status}</td>
+                        <td>${item.quantity}</td>
+                        <td>
+                            <button class="btn btn-danger" style="padding: 5px 10px; font-size: 12px;" onclick="deleteInventory(${item.id})">삭제</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function updateReservationTable() {
+            const tbody = document.getElementById('reservationBody');
+            
+            if (appData.reservations.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="empty-state">등록된 예약이 없습니다</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = appData.reservations.map(res => {
+                return `
+                    <tr>
+                        <td>${res.name}</td>
+                        <td>${res.product}</td>
+                        <td>${res.date}</td>
+                        <td>${res.quantity}</td>
+                        <td>${res.date}</td>
+                        <td>${res.phone}</td>
+                        <td>${res.status}</td>
+                        <td>
+                            <button class="btn btn-danger" style="padding: 5px 10px; font-size: 12px;" onclick="deleteReservation(${res.id})">삭제</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function updateNoticeList() {
+            const list = document.getElementById('noticeList');
+            
+            if (appData.notices.length === 0) {
+                list.innerHTML = '<div class="empty-state">등록된 공지사항이 없습니다</div>';
+                return;
+            }
+
+            list.innerHTML = appData.notices.map(notice => {
+                const date = new Date(notice.date).toLocaleDateString('ko-KR');
+                return `
+                    <div style="background: #f9f9f9; padding: 15px; border-radius: 5px; margin-bottom: 15px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h4 style="margin: 0 0 8px 0; color: #333;">${notice.title}</h4>
+                                <span class="badge" style="background: #667eea; color: white; margin-right: 10px;">${notice.category}</span>
+                                <span style="color: #999; font-size: 12px;">${date} | ${notice.author}</span>
+                            </div>
+                            <button class="btn btn-danger" style="padding: 5px 10px; font-size: 12px;" onclick="deleteNotice(${notice.id})">삭제</button>
+                        </div>
+                        <p style="margin: 10px 0 0 0; color: #666;">${notice.content}</p>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateScheduleTable() {
+            const tbody = document.getElementById('scheduleBody');
+            
+            if (appData.schedule.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">등록된 일정이 없습니다</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = appData.schedule.map(sched => {
+                return `
+                    <tr>
+                        <td>${sched.name}</td>
+                        <td>${sched.date}</td>
+                        <td>${sched.start}</td>
+                        <td>${sched.end}</td>
+                        <td>${sched.task}</td>
+                        <td>
+                            <button class="btn btn-danger" style="padding: 5px 10px; font-size: 12px;" onclick="deleteSchedule(${sched.id})">삭제</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function updateSalesTable() {
+            const tbody = document.getElementById('salesBody');
+            
+            if (appData.sales.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="empty-state">판매 기록이 없습니다</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = appData.sales.map(sale => {
+                return `
+                    <tr>
+                        <td>${sale.date}</td>
+                        <td>${sale.product}</td>
+                        <td>${sale.quantity}</td>
+                        <td>${sale.price.toLocaleString()}원</td>
+                        <td>${sale.total.toLocaleString()}원</td>
+                        <td>${sale.staff}</td>
+                        <td>
+                            <button class="btn btn-danger" style="padding: 5px 10px; font-size: 12px;" onclick="deleteSales(${sale.id})">삭제</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // 대시보드 업데이트
+        function updateDashboard() {
+            const today = new Date().toISOString().split('T')[0];
+            
+            // 오늘 판매액
+            const todaysSales = appData.sales
+                .filter(s => s.date === today)
+                .reduce((sum, s) => sum + s.total, 0);
+            document.getElementById('todaySales').textContent = todaysSales.toLocaleString() + '원';
+
+            // 예약 건수
+            document.getElementById('reservationCount').textContent = appData.reservations.length + '건';
+
+            // 폐기 예상 품목
+            const expiringCount = appData.inventory.filter(item => {
+                const expiryDate = new Date(item.expiry);
+                const daysLeft = Math.ceil((expiryDate - new Date()) / (1000 * 60 * 60 * 24));
+                return daysLeft <= 2 && daysLeft >= 0;
+            }).length;
+            document.getElementById('expiringCount').textContent = expiringCount + '개';
+
+            // 당직 인원
+            const staffCount = new Set(appData.schedule
+                .filter(s => s.date === today)
+                .map(s => s.name)).size;
+            document.getElementById('staffCount').textContent = staffCount + '명';
+
+            // 긴급 알림
+            updateAlerts();
+        }
+
+        // 긴급 알림 업데이트
+        function updateAlerts() {
+            const alerts = [];
+            const today = new Date();
+
+            // D-day 상품 확인
+            appData.inventory.forEach(item => {
+                const expiryDate = new Date(item.expiry);
+                const daysLeft = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
+                
+                if (daysLeft === 0) {
+                    alerts.push({
+                        type: 'danger',
+                        message: `<strong>${item.name}</strong>이 D-day입니다. 오늘 폐기해야 합니다!`
+                    });
+                } else if (daysLeft === 1) {
+                    alerts.push({
+                        type: 'warning',
+                        message: `<strong>${item.name}</strong>이 D-1입니다. 내일 폐기 예정입니다.`
+                    });
+                }
+            });
+
+            // 예약 확인
+            const todayReservations = appData.reservations.filter(res => res.date === today.toISOString().split('T')[0]);
+            if (todayReservations.length > 0) {
+                alerts.push({
+                    type: 'info',
+                    message: `오늘 <strong>${todayReservations.length}건</strong>의 예약이 있습니다. 준비하세요!`
+                });
+            }
+
+            const alertsList = document.getElementById('alertsList');
+            if (alerts.length === 0) {
+                alertsList.innerHTML = '<div class="empty-state">현재 긴급 사항 없음</div>';
+            } else {
+                alertsList.innerHTML = alerts.map(alert => 
+                    `<div class="alert-box alert-${alert.type}">${alert.message}</div>`
+                ).join('');
+            }
+        }
+
+        // 삭제 함수들
+        function deleteInventory(id) {
+            if (confirm('삭제하시겠습니까?')) {
+                appData.inventory = appData.inventory.filter(item => item.id !== id);
+                saveDataToLocalStorage();
+                updateInventoryTable();
+                updateDashboard();
+            }
+        }
+
+        function deleteReservation(id) {
+            if (confirm('삭제하시겠습니까?')) {
+                appData.reservations = appData.reservations.filter(item => item.id !== id);
+                saveDataToLocalStorage();
+                updateReservationTable();
+                updateDashboard();
+            }
+        }
+
+        function deleteNotice(id) {
+            if (confirm('삭제하시겠습니까?')) {
+                appData.notices = appData.notices.filter(item => item.id !== id);
+                saveDataToLocalStorage();
+                updateNoticeList();
+            }
+        }
+
+        function deleteSchedule(id) {
+            if (confirm('삭제하시겠습니까?')) {
+                appData.schedule = appData.schedule.filter(item => item.id !== id);
+                saveDataToLocalStorage();
+                updateScheduleTable();
+                updateDashboard();
+            }
+        }
+
+        function deleteSales(id) {
+            if (confirm('삭제하시겠습니까?')) {
+                appData.sales = appData.sales.filter(item => item.id !== id);
+                saveDataToLocalStorage();
+                updateSalesTable();
+                updateDashboard();
+            }
+        }
+
+        // 로컬 스토리지 저장/로드
+        function saveDataToLocalStorage() {
+            localStorage.setItem('bakeryAppData', JSON.stringify(appData));
+        }
+
+        function loadDataFromLocalStorage() {
+            const saved = localStorage.getItem('bakeryAppData');
+            if (saved) {
+                appData = JSON.parse(saved);
+            }
+        }
+    </script>
+</body>
+</html>
