@@ -166,6 +166,18 @@
             font-size: 14px;
         }
 
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(6, 182, 212, 0.12);
+        }
+
+        .product-cell { display:flex; align-items:center; gap:12px; }
+        .product-thumb { width:48px; height:48px; border-radius:8px; object-fit:cover; box-shadow: 0 2px 6px rgba(2,6,23,0.06); }
+        .product-thumb-xs { width:28px; height:28px; border-radius:6px; object-fit:cover; box-shadow: 0 1px 3px rgba(2,6,23,0.06); }
+
         .logout-btn {
             background: linear-gradient(135deg, #be185d 0%, #db2777 100%);
             color: white;
@@ -224,6 +236,30 @@
 
         .content-wrapper {
             padding: 32px;
+        }
+
+        /* Dashboard hero image (centered, large) */
+        .dashboard-hero {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0 28px 0;
+        }
+
+        .dashboard-hero-frame {
+            width: 84%;
+            max-width: 1100px;
+            height: 360px;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(2,6,23,0.08);
+            background: white;
+            object-fit: cover;
+            display: block;
+        }
+
+        @media (max-width: 800px) {
+            .dashboard-hero-frame { width: 96%; height: 220px; }
         }
 
         .content-section {
@@ -515,6 +551,18 @@
         .schedule-card table td {
             padding: 12px;
             font-size: 13px;
+        }
+        /* 일정표에서 직원명 칸이 끝 글자만 내려가는 현상 방지: 한 줄 고정 및 말줄임 처리 */
+        .schedule-card table td:first-child {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 220px;
+            vertical-align: middle;
+        }
+        .schedule-card table td:first-child strong {
+            display: inline-block;
+            max-width: 100%;
         }
 
         /* 달력 스타일 */
@@ -883,6 +931,10 @@
                     <input type="tel" id="signupPhone" placeholder="010-0000-0000" required>
                 </div>
                 <div class="form-group">
+                    <label for="signupAvatar">프로필 사진 (선택)</label>
+                    <input type="file" id="signupAvatar" accept="image/*">
+                </div>
+                <div class="form-group">
                     <label for="signupPassword">비밀번호</label>
                     <input type="password" id="signupPassword" placeholder="비밀번호를 입력하세요 (6자 이상)" required minlength="6">
                 </div>
@@ -912,6 +964,8 @@
         <div class="header">
             <h1>🥖 Staff System</h1>
             <div class="user-info">
+                <img id="currentUserAvatar" class="avatar" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='12' cy='8' r='3' fill='%23CBD5E1'/><path d='M4 20c0-4.418 3.582-8 8-8s8 3.582 8 8H4z' fill='%23E2E8F0'/></svg>" alt="avatar" title="프로필 사진 변경">
+                <input type="file" id="profilePhotoInput" accept="image/*" style="display:none">
                 <span id="currentUser">직원명</span>
                 <button class="logout-btn" id="logoutBtn">로그아웃</button>
             </div>
@@ -930,7 +984,9 @@
         <div class="content-wrapper">
             <!-- 대시보드 섹션 -->
             <div class="content-section active" id="dashboardSection">
-                <h2 class="section-title"><svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg> 오늘의 현황</h2>
+                <div class="dashboard-hero">
+                    <img id="dashboardHeroImg" src="가게사진.jpg" class="dashboard-hero-frame" alt="가게 사진">
+                </div>
                 <div class="dashboard-grid">
                     <div class="card card-stat">
                         <div class="card-title">오늘 판매액</div>
@@ -1171,7 +1227,10 @@
                     <label for="productQuantity">수량</label>
                     <input type="number" id="productQuantity" placeholder="수량" min="1" required>
                 </div>
-                
+                <div class="form-group">
+                    <label for="productImage">상품 사진 (선택)</label>
+                    <input type="file" id="productImage" accept="image/*">
+                </div>
                 <div class="btn-group">
                     <button type="submit" class="btn btn-primary">등록</button>
                     <button type="button" class="btn btn-secondary" onclick="closeInventoryModal()">취소</button>
@@ -1194,8 +1253,11 @@
                     <input type="tel" id="reservationPhone" placeholder="010-0000-0000" required>
                 </div>
                 <div class="form-group">
-                    <label for="reservationProduct">상품명</label>
-                    <input type="text" id="reservationProduct" placeholder="상품명" required>
+                    <label for="reservationProductSelect">상품명</label>
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <select id="reservationProductSelect" required style="flex:1;padding:8px;border-radius:8px;border:1px solid #e5e7eb;background:white"></select>
+                        <img id="reservationProductPreview" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='12' cy='8' r='3' fill='%23CBD5E1'/><path d='M4 20c0-4.418 3.582-8 8-8s8 3.582 8 8H4z' fill='%23E2E8F0'/></svg>" class="product-thumb-xs" alt="preview">
+                    </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
@@ -1409,9 +1471,9 @@
 
         // 회원 정보 저장소
         let users = store.get('users', [
-            { username: 'staff1', password: 'password123', name: '김철수', phone: '010-1234-5678', shift: 'morning', joinDate: '2025-01-01' },
-            { username: 'staff2', password: 'password123', name: '이영희', phone: '010-2345-6789', shift: 'middle', joinDate: '2025-01-02' },
-            { username: 'manager', password: 'manager123', name: '박매니저', phone: '010-3456-7890', shift: 'evening', joinDate: '2024-12-01' }
+            { username: 'staff1', password: 'password123', name: '김철수', phone: '010-1234-5678', shift: 'morning', joinDate: '2025-01-01', avatar: null },
+            { username: 'staff2', password: 'password123', name: '이영희', phone: '010-2345-6789', shift: 'middle', joinDate: '2025-01-02', avatar: null },
+            { username: 'manager', password: 'manager123', name: '박매니저', phone: '010-3456-7890', shift: 'evening', joinDate: '2024-12-01', avatar: null }
         ]);
 
         // 데이터 저장소
@@ -1423,6 +1485,9 @@
             sales: [],
             currentUser: null
         };
+
+        // 기본 아바타(사람 실루엣 SVG data URL)
+        const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='12' cy='8' r='3' fill='%23CBD5E1'/><path d='M4 20c0-4.418 3.582-8 8-8s8 3.582 8 8H4z' fill='%23E2E8F0'/></svg>";
 
         // 초기화
         document.addEventListener('DOMContentLoaded', function() {
@@ -1483,6 +1548,8 @@
                 appData.currentUser = username;
                 appData.currentUserInfo = user;
                 document.getElementById('currentUser').textContent = user.name;
+                const avatarEl = document.getElementById('currentUserAvatar');
+                if (avatarEl) avatarEl.src = user.avatar || DEFAULT_AVATAR;
                 document.getElementById('loginPage').classList.remove('active');
                 document.getElementById('mainPage').classList.add('active');
                 updateDashboard();
@@ -1533,11 +1600,29 @@
                 name: name,
                 phone: phone,
                 shift: shift,
-                joinDate: new Date().toISOString().split('T')[0]
+                joinDate: new Date().toISOString().split('T')[0],
+                avatar: null
             };
 
-            users.push(newUser);
-            store.set('users', users);
+            const avatarInput = document.getElementById('signupAvatar');
+            const file = avatarInput && avatarInput.files && avatarInput.files[0];
+            function finishSignup() {
+                users.push(newUser);
+                store.set('users', users);
+                alert(`회원가입이 완료되었습니다!\n계정: ${username}\n비밀번호: ${password}`);
+                document.getElementById('signupForm').reset();
+                showLogin();
+            }
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    newUser.avatar = evt.target.result;
+                    finishSignup();
+                };
+                reader.readAsDataURL(file);
+            } else {
+                finishSignup();
+            }
 
             alert(`회원가입이 완료되었습니다!\\n계정: ${username}\\n비밀번호: ${password}`);
             document.getElementById('signupForm').reset();
@@ -1553,6 +1638,8 @@
             document.getElementById('signupPage').classList.remove('active');
             document.getElementById('loginPage').classList.add('active');
             document.getElementById('mainPage').classList.remove('active');
+            const avatarEl = document.getElementById('currentUserAvatar');
+            if (avatarEl) avatarEl.src = DEFAULT_AVATAR;
         }
 
         // 탭 전환
@@ -1635,7 +1722,7 @@
             document.getElementById('salesDate').valueAsDate = new Date();
         }
 
-        // 재고 추가
+        // 재고 추가 (이미지 파일을 dataURL로 저장)
         function addInventory(e) {
             e.preventDefault();
             const product = {
@@ -1644,25 +1731,46 @@
                 date: document.getElementById('productDate').value,
                 expiry: document.getElementById('expiryDate').value,
                 quantity: parseInt(document.getElementById('productQuantity').value),
-                addedDate: new Date().toISOString()
+                addedDate: new Date().toISOString(),
+                image: null
             };
 
-            appData.inventory.push(product);
-            saveDataToLocalStorage();
-            closeInventoryModal();
-            updateInventoryTable();
-            updateDashboard();
-            alert('상품이 등록되었습니다!');
+            const fileInput = document.getElementById('productImage');
+            const file = fileInput && fileInput.files && fileInput.files[0];
+
+            function finishAdd() {
+                appData.inventory.push(product);
+                saveDataToLocalStorage();
+                closeInventoryModal();
+                updateInventoryTable();
+                updateDashboard();
+                alert('상품이 등록되었습니다!');
+            }
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    product.image = evt.target.result;
+                    finishAdd();
+                };
+                reader.readAsDataURL(file);
+            } else {
+                finishAdd();
+            }
         }
 
         // 예약 추가
         function addReservation(e) {
             e.preventDefault();
+            const selectedId = parseInt(document.getElementById('reservationProductSelect').value);
+            const productItem = appData.inventory.find(i => i.id === selectedId) || null;
             const reservation = {
                 id: Date.now(),
                 name: document.getElementById('reservationName').value,
                 phone: document.getElementById('reservationPhone').value,
-                product: document.getElementById('reservationProduct').value,
+                productId: productItem ? productItem.id : null,
+                product: productItem ? productItem.name : document.getElementById('reservationProductSelect').value,
+                productImage: productItem ? productItem.image : null,
                 quantity: parseInt(document.getElementById('reservationQuantity').value),
                 date: document.getElementById('reservationDate').value,
                 note: document.getElementById('reservationNote').value,
@@ -1751,18 +1859,20 @@
         // 테이블 업데이트
         function updateInventoryTable() {
             const tbody = document.getElementById('inventoryBody');
-            
+
             if (appData.inventory.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="6" class="empty-state">등록된 상품이 없습니다</td></tr>';
                 updateDdayCards();
                 return;
             }
 
+            const placeholder = DEFAULT_AVATAR;
+
             tbody.innerHTML = appData.inventory.map(item => {
                 const today = new Date();
                 const expiryDate = new Date(item.expiry);
                 const daysLeft = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
-                
+
                 let status = '<span class="badge badge-success">정상</span>';
                 let bgColor = '';
                 if (daysLeft === 0) {
@@ -1776,9 +1886,16 @@
                     bgColor = 'background-color: #fef9c3;';
                 }
 
+                const imgSrc = item.image || placeholder;
+
                 return `
                     <tr style="${bgColor}">
-                        <td><strong>${item.name}</strong></td>
+                        <td>
+                            <div class="product-cell">
+                                <img src="${imgSrc}" class="product-thumb" alt="${item.name}">
+                                <strong>${item.name}</strong>
+                            </div>
+                        </td>
                         <td>${item.date}</td>
                         <td>${item.expiry}</td>
                         <td>${status}</td>
@@ -1789,8 +1906,9 @@
                     </tr>
                 `;
             }).join('');
-            
+
             updateDdayCards();
+            populateReservationProducts();
         }
 
         function updateDdayCards() {
@@ -1815,9 +1933,10 @@
             document.getElementById('countD1').textContent = d1.length + '개';
             document.getElementById('countD2').textContent = d2.length + '개';
 
-            document.getElementById('listDday').innerHTML = d0.length > 0 ? d0.map(i => `<div>• ${i.name} (${i.quantity}개)</div>`).join('') : '없음';
-            document.getElementById('listD1').innerHTML = d1.length > 0 ? d1.map(i => `<div>• ${i.name} (${i.quantity}개)</div>`).join('') : '없음';
-            document.getElementById('listD2').innerHTML = d2.length > 0 ? d2.map(i => `<div>• ${i.name} (${i.quantity}개)</div>`).join('') : '없음';
+            const ph = DEFAULT_AVATAR;
+            document.getElementById('listDday').innerHTML = d0.length > 0 ? d0.map(i => `<div style="display:flex;align-items:center;gap:8px"><img src="${i.image||ph}" class="product-thumb-xs"><span> ${i.name} (${i.quantity}개)</span></div>`).join('') : '없음';
+            document.getElementById('listD1').innerHTML = d1.length > 0 ? d1.map(i => `<div style="display:flex;align-items:center;gap:8px"><img src="${i.image||ph}" class="product-thumb-xs"><span> ${i.name} (${i.quantity}개)</span></div>`).join('') : '없음';
+            document.getElementById('listD2').innerHTML = d2.length > 0 ? d2.map(i => `<div style="display:flex;align-items:center;gap:8px"><img src="${i.image||ph}" class="product-thumb-xs"><span> ${i.name} (${i.quantity}개)</span></div>`).join('') : '없음';
         }
 
         // 달력 변수
@@ -1885,7 +2004,14 @@
                     reservations.slice(0, 2).forEach(res => {
                         const badge = document.createElement('div');
                         badge.className = 'calendar-event-badge';
-                        badge.textContent = `${res.name} (${res.quantity})`;
+                        const img = document.createElement('img');
+                        img.className = 'product-thumb-xs';
+                        img.src = res.productImage || (appData.inventory.find(i => i.id === res.productId) || {}).image || DEFAULT_AVATAR;
+                        img.style.marginRight = '8px';
+                        const span = document.createElement('span');
+                        span.textContent = `${res.name} (${res.quantity})`;
+                        badge.appendChild(img);
+                        badge.appendChild(span);
                         eventsEl.appendChild(badge);
                     });
                     if (reservations.length > 2) {
@@ -1961,11 +2087,18 @@
                 tbody.innerHTML = `<tr><td colspan="7" class="empty-state">${dateStr}에 예약이 없습니다</td></tr>`;
                 return;
             }
-
-            tbody.innerHTML = filtered.map(res => `
+            tbody.innerHTML = filtered.map(res => {
+                const ph = 'https://i.pravatar.cc/80?img=65';
+                const img = res.productImage || (appData.inventory.find(i => i.id === res.productId) || {}).image || ph;
+                return `
                 <tr>
                     <td><strong>${res.name}</strong></td>
-                    <td>${res.product}</td>
+                    <td>
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <img src="${img}" class="product-thumb-xs" alt="${res.product}">
+                            <span>${res.product}</span>
+                        </div>
+                    </td>
                     <td>${res.date}</td>
                     <td>${res.quantity}</td>
                     <td>${res.phone || '-'}</td>
@@ -1981,7 +2114,7 @@
                         <button class="btn btn-danger" style="padding: 5px 10px; font-size: 12px;" onclick="deleteReservation(${res.id})">삭제</button>
                     </td>
                 </tr>
-            `).join('');
+            `}).join('');
         }
 
         function updateNoticeList() {
@@ -2157,6 +2290,67 @@
             updateAlerts();
         }
 
+        // 프로필 사진 변경: 헤더 아바타 클릭 시 파일 선택기 열기 및 저장
+        document.addEventListener('DOMContentLoaded', function() {
+            const avatarEl = document.getElementById('currentUserAvatar');
+            const fileInput = document.getElementById('profilePhotoInput');
+            if (avatarEl && fileInput) {
+                avatarEl.style.cursor = 'pointer';
+                avatarEl.addEventListener('click', () => fileInput.click());
+                fileInput.addEventListener('change', (e) => {
+                    const file = e.target.files && e.target.files[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = function(evt) {
+                        const dataUrl = evt.target.result;
+                        // update UI
+                        avatarEl.src = dataUrl;
+                        // update users store and appData
+                        if (appData.currentUser) {
+                            // find in users and update
+                            const u = users.find(x => x.username === appData.currentUser);
+                            if (u) {
+                                u.avatar = dataUrl;
+                                store.set('users', users);
+                            }
+                            if (appData.currentUserInfo) {
+                                appData.currentUserInfo.avatar = dataUrl;
+                                saveDataToLocalStorage();
+                            }
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+        });
+
+        // 예약 모달의 상품 select를 채우는 함수
+        function populateReservationProducts() {
+            const sel = document.getElementById('reservationProductSelect');
+            if (!sel) return;
+            sel.innerHTML = '';
+            const placeholderOpt = document.createElement('option');
+            placeholderOpt.value = '';
+            placeholderOpt.textContent = '선택하세요';
+            placeholderOpt.disabled = true;
+            placeholderOpt.selected = true;
+            sel.appendChild(placeholderOpt);
+
+            appData.inventory.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item.id;
+                opt.textContent = item.name + ` (${item.quantity})`;
+                sel.appendChild(opt);
+            });
+
+            sel.addEventListener('change', (e) => {
+                const id = parseInt(e.target.value);
+                const item = appData.inventory.find(i => i.id === id);
+                const preview = document.getElementById('reservationProductPreview');
+                if (preview) preview.src = (item && item.image) ? item.image : DEFAULT_AVATAR;
+            });
+        }
+
         // 긴급 알림 업데이트
         function updateAlerts() {
             const alerts = [];
@@ -2254,6 +2448,15 @@
             const saved = localStorage.getItem('bakeryAppData');
             if (saved) {
                 appData = JSON.parse(saved);
+            }
+            // ensure reservation product select is populated on load
+            setTimeout(populateReservationProducts, 50);
+            // if a user is logged in (session persisted), set header avatar and name
+            if (appData.currentUserInfo) {
+                const avatarEl = document.getElementById('currentUserAvatar');
+                const nameEl = document.getElementById('currentUser');
+                if (avatarEl) avatarEl.src = appData.currentUserInfo.avatar || 'https://i.pravatar.cc/40?img=65';
+                if (nameEl) nameEl.textContent = appData.currentUserInfo.name || '직원명';
             }
         }
     </script>
